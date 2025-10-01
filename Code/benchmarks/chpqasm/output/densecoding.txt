@@ -1,0 +1,4 @@
+Outcome of measuring qubit 4: 0
+
+Outcome of measuring qubit 3: 0
+

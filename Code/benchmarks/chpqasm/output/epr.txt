@@ -1,0 +1,4 @@
+Outcome of measuring qubit 1: 1  (random)
+
+Outcome of measuring qubit 0: 1
+

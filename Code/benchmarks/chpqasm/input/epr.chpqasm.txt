@@ -1,0 +1,6 @@
+CHPQASM
+qreg 2
+h 0
+cx 0 1
+measure 1
+measure 0

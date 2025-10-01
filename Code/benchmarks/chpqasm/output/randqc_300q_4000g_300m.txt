@@ -1,0 +1,600 @@
+Outcome of measuring qubit 0: 0  (random)
+
+Outcome of measuring qubit 1: 1  (random)
+
+Outcome of measuring qubit 2: 0  (random)
+
+Outcome of measuring qubit 3: 0  (random)
+
+Outcome of measuring qubit 4: 0  (random)
+
+Outcome of measuring qubit 5: 0  (random)
+
+Outcome of measuring qubit 6: 1  (random)
+
+Outcome of measuring qubit 7: 0  (random)
+
+Outcome of measuring qubit 8: 1  (random)
+
+Outcome of measuring qubit 9: 1  (random)
+
+Outcome of measuring qubit 10: 0  (random)
+
+Outcome of measuring qubit 11: 0  (random)
+
+Outcome of measuring qubit 12: 0
+
+Outcome of measuring qubit 13: 1  (random)
+
+Outcome of measuring qubit 14: 1  (random)
+
+Outcome of measuring qubit 15: 0  (random)
+
+Outcome of measuring qubit 16: 1  (random)
+
+Outcome of measuring qubit 17: 0  (random)
+
+Outcome of measuring qubit 18: 1  (random)
+
+Outcome of measuring qubit 19: 0  (random)
+
+Outcome of measuring qubit 20: 1  (random)
+
+Outcome of measuring qubit 21: 1  (random)
+
+Outcome of measuring qubit 22: 1  (random)
+
+Outcome of measuring qubit 23: 0  (random)
+
+Outcome of measuring qubit 24: 0  (random)
+
+Outcome of measuring qubit 25: 1  (random)
+
+Outcome of measuring qubit 26: 1  (random)
+
+Outcome of measuring qubit 27: 1  (random)
+
+Outcome of measuring qubit 28: 0  (random)
+
+Outcome of measuring qubit 29: 1  (random)
+
+Outcome of measuring qubit 30: 0  (random)
+
+Outcome of measuring qubit 31: 1  (random)
+
+Outcome of measuring qubit 32: 1  (random)
+
+Outcome of measuring qubit 33: 0  (random)
+
+Outcome of measuring qubit 34: 0  (random)
+
+Outcome of measuring qubit 35: 0  (random)
+
+Outcome of measuring qubit 36: 1  (random)
+
+Outcome of measuring qubit 37: 0  (random)
+
+Outcome of measuring qubit 38: 0  (random)
+
+Outcome of measuring qubit 39: 1  (random)
+
+Outcome of measuring qubit 40: 0  (random)
+
+Outcome of measuring qubit 41: 0  (random)
+
+Outcome of measuring qubit 42: 0  (random)
+
+Outcome of measuring qubit 43: 0  (random)
+
+Outcome of measuring qubit 44: 1  (random)
+
+Outcome of measuring qubit 45: 0  (random)
+
+Outcome of measuring qubit 46: 1  (random)
+
+Outcome of measuring qubit 47: 0  (random)
+
+Outcome of measuring qubit 48: 1  (random)
+
+Outcome of measuring qubit 49: 1  (random)
+
+Outcome of measuring qubit 50: 0  (random)
+
+Outcome of measuring qubit 51: 0  (random)
+
+Outcome of measuring qubit 52: 1  (random)
+
+Outcome of measuring qubit 53: 0  (random)
+
+Outcome of measuring qubit 54: 0  (random)
+
+Outcome of measuring qubit 55: 1  (random)
+
+Outcome of measuring qubit 56: 0  (random)
+
+Outcome of measuring qubit 57: 0  (random)
+
+Outcome of measuring qubit 58: 0  (random)
+
+Outcome of measuring qubit 59: 0  (random)
+
+Outcome of measuring qubit 60: 1  (random)
+
+Outcome of measuring qubit 61: 0  (random)
+
+Outcome of measuring qubit 62: 1  (random)
+
+Outcome of measuring qubit 63: 1  (random)
+
+Outcome of measuring qubit 64: 0  (random)
+
+Outcome of measuring qubit 65: 1  (random)
+
+Outcome of measuring qubit 66: 1  (random)
+
+Outcome of measuring qubit 67: 1  (random)
+
+Outcome of measuring qubit 68: 0  (random)
+
+Outcome of measuring qubit 69: 1  (random)
+
+Outcome of measuring qubit 70: 1  (random)
+
+Outcome of measuring qubit 71: 1  (random)
+
+Outcome of measuring qubit 72: 0
+
+Outcome of measuring qubit 73: 1  (random)
+
+Outcome of measuring qubit 74: 1  (random)
+
+Outcome of measuring qubit 75: 0  (random)
+
+Outcome of measuring qubit 76: 0  (random)
+
+Outcome of measuring qubit 77: 1  (random)
+
+Outcome of measuring qubit 78: 0  (random)
+
+Outcome of measuring qubit 79: 0  (random)
+
+Outcome of measuring qubit 80: 1  (random)
+
+Outcome of measuring qubit 81: 1  (random)
+
+Outcome of measuring qubit 82: 1  (random)
+
+Outcome of measuring qubit 83: 1  (random)
+
+Outcome of measuring qubit 84: 1  (random)
+
+Outcome of measuring qubit 85: 0  (random)
+
+Outcome of measuring qubit 86: 0  (random)
+
+Outcome of measuring qubit 87: 1  (random)
+
+Outcome of measuring qubit 88: 1  (random)
+
+Outcome of measuring qubit 89: 0  (random)
+
+Outcome of measuring qubit 90: 1  (random)
+
+Outcome of measuring qubit 91: 1  (random)
+
+Outcome of measuring qubit 92: 1  (random)
+
+Outcome of measuring qubit 93: 1  (random)
+
+Outcome of measuring qubit 94: 1  (random)
+
+Outcome of measuring qubit 95: 1  (random)
+
+Outcome of measuring qubit 96: 0  (random)
+
+Outcome of measuring qubit 97: 1  (random)
+
+Outcome of measuring qubit 98: 1  (random)
+
+Outcome of measuring qubit 99: 1  (random)
+
+Outcome of measuring qubit 100: 1  (random)
+
+Outcome of measuring qubit 101: 1  (random)
+
+Outcome of measuring qubit 102: 0  (random)
+
+Outcome of measuring qubit 103: 0  (random)
+
+Outcome of measuring qubit 104: 1  (random)
+
+Outcome of measuring qubit 105: 0  (random)
+
+Outcome of measuring qubit 106: 0  (random)
+
+Outcome of measuring qubit 107: 1  (random)
+
+Outcome of measuring qubit 108: 1  (random)
+
+Outcome of measuring qubit 109: 0  (random)
+
+Outcome of measuring qubit 110: 1  (random)
+
+Outcome of measuring qubit 111: 1  (random)
+
+Outcome of measuring qubit 112: 0  (random)
+
+Outcome of measuring qubit 113: 1  (random)
+
+Outcome of measuring qubit 114: 0  (random)
+
+Outcome of measuring qubit 115: 0  (random)
+
+Outcome of measuring qubit 116: 1  (random)
+
+Outcome of measuring qubit 117: 0  (random)
+
+Outcome of measuring qubit 118: 1  (random)
+
+Outcome of measuring qubit 119: 0  (random)
+
+Outcome of measuring qubit 120: 0  (random)
+
+Outcome of measuring qubit 121: 1  (random)
+
+Outcome of measuring qubit 122: 0  (random)
+
+Outcome of measuring qubit 123: 0  (random)
+
+Outcome of measuring qubit 124: 1  (random)
+
+Outcome of measuring qubit 125: 1  (random)
+
+Outcome of measuring qubit 126: 1  (random)
+
+Outcome of measuring qubit 127: 1  (random)
+
+Outcome of measuring qubit 128: 0  (random)
+
+Outcome of measuring qubit 129: 0  (random)
+
+Outcome of measuring qubit 130: 0  (random)
+
+Outcome of measuring qubit 131: 0  (random)
+
+Outcome of measuring qubit 132: 1  (random)
+
+Outcome of measuring qubit 133: 0  (random)
+
+Outcome of measuring qubit 134: 1  (random)
+
+Outcome of measuring qubit 135: 1  (random)
+
+Outcome of measuring qubit 136: 1  (random)
+
+Outcome of measuring qubit 137: 1  (random)
+
+Outcome of measuring qubit 138: 1  (random)
+
+Outcome of measuring qubit 139: 1  (random)
+
+Outcome of measuring qubit 140: 1  (random)
+
+Outcome of measuring qubit 141: 0  (random)
+
+Outcome of measuring qubit 142: 0  (random)
+
+Outcome of measuring qubit 143: 1  (random)
+
+Outcome of measuring qubit 144: 1  (random)
+
+Outcome of measuring qubit 145: 1  (random)
+
+Outcome of measuring qubit 146: 1  (random)
+
+Outcome of measuring qubit 147: 0  (random)
+
+Outcome of measuring qubit 148: 1  (random)
+
+Outcome of measuring qubit 149: 1  (random)
+
+Outcome of measuring qubit 150: 1  (random)
+
+Outcome of measuring qubit 151: 1  (random)
+
+Outcome of measuring qubit 152: 1  (random)
+
+Outcome of measuring qubit 153: 1  (random)
+
+Outcome of measuring qubit 154: 1  (random)
+
+Outcome of measuring qubit 155: 1  (random)
+
+Outcome of measuring qubit 156: 0  (random)
+
+Outcome of measuring qubit 157: 0  (random)
+
+Outcome of measuring qubit 158: 1  (random)
+
+Outcome of measuring qubit 159: 0  (random)
+
+Outcome of measuring qubit 160: 1  (random)
+
+Outcome of measuring qubit 161: 1  (random)
+
+Outcome of measuring qubit 162: 0  (random)
+
+Outcome of measuring qubit 163: 1  (random)
+
+Outcome of measuring qubit 164: 1  (random)
+
+Outcome of measuring qubit 165: 0  (random)
+
+Outcome of measuring qubit 166: 1  (random)
+
+Outcome of measuring qubit 167: 1  (random)
+
+Outcome of measuring qubit 168: 1  (random)
+
+Outcome of measuring qubit 169: 0  (random)
+
+Outcome of measuring qubit 170: 0  (random)
+
+Outcome of measuring qubit 171: 0  (random)
+
+Outcome of measuring qubit 172: 0  (random)
+
+Outcome of measuring qubit 173: 0  (random)
+
+Outcome of measuring qubit 174: 0  (random)
+
+Outcome of measuring qubit 175: 1  (random)
+
+Outcome of measuring qubit 176: 0  (random)
+
+Outcome of measuring qubit 177: 0  (random)
+
+Outcome of measuring qubit 178: 1  (random)
+
+Outcome of measuring qubit 179: 1  (random)
+
+Outcome of measuring qubit 180: 1  (random)
+
+Outcome of measuring qubit 181: 1  (random)
+
+Outcome of measuring qubit 182: 1  (random)
+
+Outcome of measuring qubit 183: 0  (random)
+
+Outcome of measuring qubit 184: 1  (random)
+
+Outcome of measuring qubit 185: 0  (random)
+
+Outcome of measuring qubit 186: 1  (random)
+
+Outcome of measuring qubit 187: 1  (random)
+
+Outcome of measuring qubit 188: 0  (random)
+
+Outcome of measuring qubit 189: 0  (random)
+
+Outcome of measuring qubit 190: 1  (random)
+
+Outcome of measuring qubit 191: 1  (random)
+
+Outcome of measuring qubit 192: 1  (random)
+
+Outcome of measuring qubit 193: 1  (random)
+
+Outcome of measuring qubit 194: 0  (random)
+
+Outcome of measuring qubit 195: 1  (random)
+
+Outcome of measuring qubit 196: 0  (random)
+
+Outcome of measuring qubit 197: 1  (random)
+
+Outcome of measuring qubit 198: 1  (random)
+
+Outcome of measuring qubit 199: 0  (random)
+
+Outcome of measuring qubit 200: 0  (random)
+
+Outcome of measuring qubit 201: 0  (random)
+
+Outcome of measuring qubit 202: 0  (random)
+
+Outcome of measuring qubit 203: 1  (random)
+
+Outcome of measuring qubit 204: 0  (random)
+
+Outcome of measuring qubit 205: 0  (random)
+
+Outcome of measuring qubit 206: 1  (random)
+
+Outcome of measuring qubit 207: 0  (random)
+
+Outcome of measuring qubit 208: 0  (random)
+
+Outcome of measuring qubit 209: 1  (random)
+
+Outcome of measuring qubit 210: 0  (random)
+
+Outcome of measuring qubit 211: 1  (random)
+
+Outcome of measuring qubit 212: 1  (random)
+
+Outcome of measuring qubit 213: 0  (random)
+
+Outcome of measuring qubit 214: 1  (random)
+
+Outcome of measuring qubit 215: 1  (random)
+
+Outcome of measuring qubit 216: 1  (random)
+
+Outcome of measuring qubit 217: 0  (random)
+
+Outcome of measuring qubit 218: 0  (random)
+
+Outcome of measuring qubit 219: 0  (random)
+
+Outcome of measuring qubit 220: 0  (random)
+
+Outcome of measuring qubit 221: 1  (random)
+
+Outcome of measuring qubit 222: 0  (random)
+
+Outcome of measuring qubit 223: 1  (random)
+
+Outcome of measuring qubit 224: 1  (random)
+
+Outcome of measuring qubit 225: 1  (random)
+
+Outcome of measuring qubit 226: 0  (random)
+
+Outcome of measuring qubit 227: 1  (random)
+
+Outcome of measuring qubit 228: 1  (random)
+
+Outcome of measuring qubit 229: 0  (random)
+
+Outcome of measuring qubit 230: 0  (random)
+
+Outcome of measuring qubit 231: 1  (random)
+
+Outcome of measuring qubit 232: 0  (random)
+
+Outcome of measuring qubit 233: 0  (random)
+
+Outcome of measuring qubit 234: 1
+
+Outcome of measuring qubit 235: 0  (random)
+
+Outcome of measuring qubit 236: 0  (random)
+
+Outcome of measuring qubit 237: 0  (random)
+
+Outcome of measuring qubit 238: 0  (random)
+
+Outcome of measuring qubit 239: 0  (random)
+
+Outcome of measuring qubit 240: 0  (random)
+
+Outcome of measuring qubit 241: 1  (random)
+
+Outcome of measuring qubit 242: 0  (random)
+
+Outcome of measuring qubit 243: 1  (random)
+
+Outcome of measuring qubit 244: 1  (random)
+
+Outcome of measuring qubit 245: 1  (random)
+
+Outcome of measuring qubit 246: 0  (random)
+
+Outcome of measuring qubit 247: 1  (random)
+
+Outcome of measuring qubit 248: 1  (random)
+
+Outcome of measuring qubit 249: 0  (random)
+
+Outcome of measuring qubit 250: 1  (random)
+
+Outcome of measuring qubit 251: 1
+
+Outcome of measuring qubit 252: 0
+
+Outcome of measuring qubit 253: 1  (random)
+
+Outcome of measuring qubit 254: 0  (random)
+
+Outcome of measuring qubit 255: 1  (random)
+
+Outcome of measuring qubit 256: 1  (random)
+
+Outcome of measuring qubit 257: 0  (random)
+
+Outcome of measuring qubit 258: 1  (random)
+
+Outcome of measuring qubit 259: 1  (random)
+
+Outcome of measuring qubit 260: 0  (random)
+
+Outcome of measuring qubit 261: 0  (random)
+
+Outcome of measuring qubit 262: 1  (random)
+
+Outcome of measuring qubit 263: 0  (random)
+
+Outcome of measuring qubit 264: 1  (random)
+
+Outcome of measuring qubit 265: 1  (random)
+
+Outcome of measuring qubit 266: 1  (random)
+
+Outcome of measuring qubit 267: 1  (random)
+
+Outcome of measuring qubit 268: 0
+
+Outcome of measuring qubit 269: 0  (random)
+
+Outcome of measuring qubit 270: 1  (random)
+
+Outcome of measuring qubit 271: 0  (random)
+
+Outcome of measuring qubit 272: 0  (random)
+
+Outcome of measuring qubit 273: 0  (random)
+
+Outcome of measuring qubit 274: 1  (random)
+
+Outcome of measuring qubit 275: 1  (random)
+
+Outcome of measuring qubit 276: 1  (random)
+
+Outcome of measuring qubit 277: 1  (random)
+
+Outcome of measuring qubit 278: 1  (random)
+
+Outcome of measuring qubit 279: 1  (random)
+
+Outcome of measuring qubit 280: 0  (random)
+
+Outcome of measuring qubit 281: 1  (random)
+
+Outcome of measuring qubit 282: 1  (random)
+
+Outcome of measuring qubit 283: 0  (random)
+
+Outcome of measuring qubit 284: 0  (random)
+
+Outcome of measuring qubit 285: 0  (random)
+
+Outcome of measuring qubit 286: 1  (random)
+
+Outcome of measuring qubit 287: 0  (random)
+
+Outcome of measuring qubit 288: 1  (random)
+
+Outcome of measuring qubit 289: 0  (random)
+
+Outcome of measuring qubit 290: 1  (random)
+
+Outcome of measuring qubit 291: 0  (random)
+
+Outcome of measuring qubit 292: 0  (random)
+
+Outcome of measuring qubit 293: 0  (random)
+
+Outcome of measuring qubit 294: 1  (random)
+
+Outcome of measuring qubit 295: 0  (random)
+
+Outcome of measuring qubit 296: 1  (random)
+
+Outcome of measuring qubit 297: 1
+
+Outcome of measuring qubit 298: 0
+
+Outcome of measuring qubit 299: 0  (random)
+

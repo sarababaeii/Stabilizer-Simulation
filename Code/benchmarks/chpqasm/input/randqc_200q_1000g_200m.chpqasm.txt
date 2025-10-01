@@ -1,0 +1,1202 @@
+CHPQASM
+qreg 200
+h 52
+cx 195 33
+h 46
+cx 150 51
+cx 130 167
+s 108
+h 10
+h 193
+s 171
+h 45
+s 195
+cx 178 181
+cx 44 165
+cx 74 32
+s 105
+cx 133 187
+h 173
+s 147
+cx 164 149
+s 132
+s 191
+s 54
+cx 156 24
+h 135
+cx 5 167
+cx 54 193
+h 25
+cx 9 26
+h 176
+s 2
+s 194
+s 134
+s 141
+cx 189 60
+h 5
+cx 116 41
+cx 186 135
+s 4
+h 30
+h 167
+h 119
+h 105
+cx 10 157
+s 99
+h 186
+s 16
+h 139
+s 132
+h 45
+h 88
+s 19
+cx 80 27
+h 157
+s 54
+s 158
+s 110
+s 15
+cx 62 152
+s 199
+cx 60 80
+cx 79 163
+cx 42 108
+cx 136 14
+h 196
+s 78
+cx 82 49
+cx 112 1
+cx 51 82
+cx 48 131
+s 119
+s 178
+h 193
+cx 195 61
+s 38
+s 7
+cx 59 128
+s 133
+h 81
+s 186
+h 18
+s 145
+h 43
+s 168
+s 151
+s 163
+h 190
+s 152
+s 44
+s 86
+h 108
+h 97
+h 36
+s 92
+h 127
+cx 104 129
+cx 52 125
+cx 103 49
+cx 31 17
+s 61
+h 197
+s 95
+cx 166 119
+s 46
+s 110
+s 130
+s 93
+cx 169 83
+h 50
+s 35
+h 45
+cx 194 5
+cx 193 187
+cx 28 118
+cx 182 162
+s 1
+cx 156 90
+cx 23 110
+s 19
+h 115
+h 62
+s 28
+s 68
+h 146
+h 135
+s 120
+cx 23 120
+s 26
+cx 88 168
+s 143
+s 18
+h 79
+h 87
+s 62
+cx 146 180
+cx 84 1
+h 53
+h 46
+s 148
+cx 0 35
+cx 152 121
+s 151
+s 74
+s 98
+s 73
+s 30
+cx 194 0
+h 172
+h 102
+cx 182 131
+h 184
+cx 106 29
+cx 12 197
+h 44
+h 37
+s 50
+h 161
+s 149
+h 54
+h 54
+h 149
+s 175
+s 133
+s 11
+h 179
+cx 94 185
+cx 62 134
+h 139
+h 78
+cx 158 66
+h 187
+cx 91 83
+s 163
+cx 129 158
+cx 70 162
+cx 80 51
+s 185
+h 111
+h 168
+h 175
+cx 131 65
+h 62
+s 182
+h 176
+s 10
+s 112
+h 188
+cx 38 48
+cx 80 61
+s 161
+s 196
+s 10
+h 109
+cx 69 23
+cx 123 108
+cx 187 52
+s 126
+h 97
+h 28
+cx 27 49
+h 100
+s 114
+cx 46 70
+cx 161 85
+s 77
+h 26
+cx 119 161
+h 118
+s 173
+h 165
+s 70
+s 98
+s 38
+h 111
+cx 160 24
+h 156
+s 180
+cx 138 160
+cx 112 1
+s 178
+s 24
+h 177
+h 174
+h 59
+s 75
+s 76
+s 90
+h 89
+h 123
+s 111
+cx 78 142
+s 120
+cx 47 121
+cx 14 142
+h 107
+cx 78 50
+cx 196 27
+s 30
+h 162
+h 168
+h 33
+h 110
+cx 171 22
+h 75
+h 157
+cx 86 11
+cx 92 67
+cx 84 195
+h 16
+cx 151 80
+h 28
+cx 62 126
+cx 34 135
+cx 176 64
+s 132
+cx 131 172
+h 194
+h 134
+s 146
+s 16
+s 23
+cx 88 44
+s 173
+h 68
+s 132
+cx 71 22
+s 191
+h 140
+cx 66 137
+h 193
+s 153
+s 80
+s 17
+h 35
+h 87
+cx 42 44
+h 48
+cx 126 25
+cx 136 140
+s 105
+cx 174 7
+cx 86 146
+cx 48 19
+cx 188 100
+cx 3 188
+h 122
+h 96
+s 58
+cx 144 132
+h 49
+cx 192 68
+s 92
+cx 134 45
+s 185
+h 180
+s 102
+h 182
+h 65
+h 81
+cx 113 85
+s 93
+cx 85 4
+s 48
+cx 101 14
+s 15
+s 75
+s 76
+cx 91 30
+cx 76 119
+h 43
+h 167
+cx 171 63
+h 169
+s 127
+h 71
+cx 104 102
+cx 52 33
+s 8
+h 160
+s 126
+h 143
+cx 6 62
+s 136
+cx 71 167
+cx 180 116
+h 121
+s 92
+h 175
+s 44
+h 189
+s 133
+cx 151 88
+cx 109 74
+s 64
+cx 3 139
+cx 173 50
+s 114
+cx 174 12
+h 95
+s 191
+h 133
+cx 86 68
+h 28
+s 87
+h 167
+s 186
+cx 172 182
+h 139
+h 111
+h 161
+h 92
+s 77
+cx 41 183
+h 31
+s 68
+h 146
+s 172
+h 31
+cx 86 74
+s 12
+cx 142 129
+cx 46 180
+s 27
+s 103
+cx 30 11
+s 102
+s 71
+h 117
+s 63
+cx 33 6
+s 143
+cx 58 13
+s 110
+s 89
+s 120
+s 43
+cx 33 174
+h 141
+s 27
+cx 146 75
+cx 153 85
+h 194
+cx 118 199
+s 126
+cx 85 127
+h 57
+h 72
+s 70
+s 90
+h 32
+h 61
+h 193
+s 27
+cx 76 1
+s 82
+h 179
+cx 56 49
+h 121
+s 91
+cx 50 134
+h 58
+h 37
+cx 61 175
+s 86
+s 166
+s 154
+cx 180 9
+s 44
+s 72
+s 142
+h 126
+h 108
+cx 10 66
+s 133
+cx 158 91
+h 34
+cx 57 161
+cx 135 36
+cx 21 112
+h 64
+cx 49 140
+cx 107 186
+cx 5 67
+h 1
+cx 64 48
+cx 65 184
+s 77
+cx 114 1
+h 30
+h 195
+s 40
+cx 0 157
+cx 65 55
+h 120
+cx 177 129
+cx 112 101
+cx 132 82
+cx 41 142
+s 6
+cx 109 147
+s 177
+s 135
+cx 184 115
+s 101
+s 190
+cx 176 167
+s 51
+h 22
+s 62
+h 189
+cx 113 171
+h 169
+s 198
+cx 157 176
+s 121
+h 129
+cx 112 186
+cx 71 174
+cx 155 53
+h 105
+cx 73 125
+h 126
+h 106
+s 0
+cx 160 122
+cx 86 5
+h 168
+h 181
+h 150
+h 33
+h 90
+s 82
+cx 8 76
+cx 15 4
+cx 176 6
+cx 57 152
+h 67
+s 141
+h 149
+cx 163 22
+h 135
+cx 57 16
+h 42
+cx 7 168
+h 50
+h 4
+h 121
+cx 113 182
+cx 153 24
+h 20
+h 7
+cx 2 56
+cx 1 109
+cx 157 160
+s 39
+s 28
+cx 70 198
+s 79
+s 20
+s 125
+h 49
+cx 188 194
+s 140
+h 143
+cx 87 163
+cx 186 140
+cx 61 72
+cx 94 173
+h 73
+s 24
+s 184
+cx 64 182
+h 196
+h 130
+s 2
+cx 18 130
+s 98
+h 67
+h 146
+s 154
+h 102
+h 196
+h 69
+cx 189 100
+h 115
+cx 73 67
+cx 24 42
+s 177
+cx 195 71
+cx 190 19
+h 199
+h 121
+s 25
+h 135
+cx 117 16
+cx 53 187
+h 158
+cx 195 97
+cx 164 65
+cx 14 61
+h 169
+cx 189 123
+cx 165 1
+cx 181 42
+s 67
+cx 156 165
+s 107
+h 157
+cx 74 118
+h 59
+s 117
+h 171
+cx 26 15
+h 137
+h 130
+h 150
+s 148
+s 105
+h 121
+h 121
+cx 180 107
+h 43
+cx 95 175
+h 196
+h 196
+h 135
+cx 168 100
+h 7
+s 161
+s 123
+cx 56 119
+s 103
+h 14
+s 158
+s 101
+h 174
+h 15
+cx 58 4
+cx 81 103
+s 5
+cx 51 67
+cx 93 103
+cx 178 13
+h 33
+cx 148 20
+s 69
+s 27
+h 128
+s 114
+cx 78 140
+s 74
+h 184
+s 72
+s 7
+h 14
+s 34
+s 46
+s 60
+h 51
+s 12
+h 68
+cx 125 49
+s 11
+s 113
+cx 151 23
+cx 37 195
+s 193
+cx 123 140
+h 187
+h 57
+s 133
+h 60
+cx 35 70
+s 134
+cx 129 3
+h 190
+cx 122 51
+h 177
+s 62
+h 3
+cx 7 180
+h 18
+cx 75 101
+cx 34 101
+s 175
+cx 53 111
+h 127
+h 188
+cx 24 143
+cx 182 153
+h 14
+h 138
+s 54
+s 73
+cx 27 118
+h 42
+h 174
+cx 106 171
+h 32
+s 192
+s 183
+cx 112 35
+cx 0 22
+h 186
+h 49
+h 84
+cx 176 177
+cx 145 151
+h 115
+s 84
+s 162
+h 61
+s 101
+s 53
+s 86
+h 184
+h 154
+s 27
+cx 105 156
+cx 89 50
+s 119
+h 148
+h 62
+cx 141 64
+h 161
+cx 198 58
+s 82
+h 151
+cx 197 65
+s 87
+h 47
+cx 109 85
+h 69
+h 4
+cx 63 123
+cx 134 39
+cx 8 6
+s 12
+h 33
+h 15
+cx 2 42
+s 14
+h 152
+cx 30 55
+s 63
+h 135
+s 192
+cx 43 76
+cx 162 181
+h 193
+s 48
+cx 45 157
+h 32
+s 125
+cx 103 55
+cx 33 96
+s 180
+cx 188 66
+h 26
+cx 165 113
+s 88
+s 79
+h 82
+h 114
+cx 47 45
+h 53
+h 22
+cx 123 79
+s 173
+s 28
+cx 143 49
+cx 84 12
+cx 86 81
+s 188
+s 1
+s 91
+s 191
+h 117
+s 172
+s 191
+cx 54 84
+s 137
+s 76
+s 124
+cx 67 167
+s 176
+s 7
+cx 133 112
+cx 136 112
+s 73
+s 61
+h 151
+h 3
+h 99
+cx 34 128
+cx 125 142
+s 29
+s 122
+h 116
+cx 34 165
+cx 61 28
+s 5
+cx 41 174
+cx 82 35
+h 64
+s 49
+cx 85 184
+h 167
+s 186
+h 44
+h 170
+cx 138 51
+h 179
+cx 62 53
+h 130
+s 0
+s 55
+h 51
+s 115
+h 111
+cx 153 65
+h 31
+s 139
+cx 148 41
+h 9
+h 104
+s 23
+h 157
+h 75
+s 145
+cx 72 192
+s 52
+cx 182 135
+cx 91 71
+h 157
+cx 198 103
+s 153
+h 77
+s 108
+cx 169 197
+s 2
+s 157
+s 73
+s 98
+cx 63 177
+cx 40 20
+cx 8 20
+h 41
+cx 9 6
+cx 108 159
+cx 87 79
+cx 154 34
+s 138
+h 7
+s 35
+h 4
+s 103
+cx 197 174
+cx 83 151
+s 115
+h 72
+s 118
+s 183
+cx 34 188
+s 10
+h 118
+cx 153 63
+s 28
+s 186
+h 6
+h 163
+s 197
+cx 155 106
+cx 69 50
+s 178
+cx 58 19
+cx 25 4
+cx 93 44
+s 75
+h 179
+cx 173 20
+cx 92 72
+cx 14 105
+cx 60 158
+cx 49 143
+s 15
+cx 3 154
+s 38
+h 26
+cx 41 166
+s 116
+h 60
+cx 38 13
+s 146
+h 78
+cx 129 158
+h 31
+s 85
+s 102
+cx 174 97
+h 60
+h 140
+cx 128 61
+h 193
+cx 66 45
+h 105
+s 198
+s 42
+s 38
+s 198
+h 30
+h 178
+cx 93 82
+h 36
+s 2
+s 58
+cx 96 133
+s 86
+h 43
+h 187
+s 106
+h 102
+cx 177 65
+s 54
+s 146
+cx 43 13
+cx 98 113
+s 90
+cx 54 187
+h 16
+cx 7 17
+h 96
+cx 70 80
+cx 169 150
+cx 197 88
+cx 188 57
+cx 189 143
+h 40
+cx 17 39
+s 63
+s 155
+cx 133 51
+cx 25 9
+cx 25 199
+h 50
+s 37
+h 147
+s 29
+cx 44 1
+s 146
+h 161
+h 60
+h 39
+s 10
+h 196
+h 148
+s 181
+h 98
+s 64
+cx 133 111
+h 7
+s 152
+h 39
+h 160
+cx 83 45
+cx 183 146
+cx 179 119
+h 139
+cx 50 16
+h 162
+cx 156 136
+cx 53 7
+h 100
+cx 183 164
+s 44
+cx 122 106
+h 74
+cx 198 57
+h 14
+h 192
+cx 186 123
+s 129
+cx 18 108
+h 10
+cx 101 108
+s 105
+h 187
+cx 152 43
+s 101
+cx 83 153
+h 172
+h 99
+cx 58 170
+cx 37 47
+h 182
+cx 164 50
+cx 117 28
+h 156
+cx 62 106
+s 55
+cx 95 143
+s 103
+cx 155 121
+s 0
+cx 86 144
+cx 150 132
+cx 97 41
+h 48
+s 162
+h 21
+s 46
+cx 97 124
+s 22
+s 135
+s 122
+cx 50 166
+h 74
+cx 117 17
+cx 163 11
+h 160
+s 11
+cx 69 116
+cx 3 55
+s 54
+cx 190 172
+s 152
+h 120
+h 12
+cx 144 115
+h 3
+h 58
+s 51
+s 10
+s 141
+cx 135 119
+h 6
+cx 57 67
+cx 4 31
+s 40
+cx 94 155
+s 44
+cx 48 176
+cx 155 27
+cx 89 81
+h 61
+cx 35 59
+cx 1 37
+h 99
+s 5
+h 112
+cx 90 199
+h 59
+s 159
+s 182
+h 179
+cx 117 13
+h 37
+h 131
+h 109
+cx 141 151
+s 183
+measure 0
+measure 1
+measure 2
+measure 3
+measure 4
+measure 5
+measure 6
+measure 7
+measure 8
+measure 9
+measure 10
+measure 11
+measure 12
+measure 13
+measure 14
+measure 15
+measure 16
+measure 17
+measure 18
+measure 19
+measure 20
+measure 21
+measure 22
+measure 23
+measure 24
+measure 25
+measure 26
+measure 27
+measure 28
+measure 29
+measure 30
+measure 31
+measure 32
+measure 33
+measure 34
+measure 35
+measure 36
+measure 37
+measure 38
+measure 39
+measure 40
+measure 41
+measure 42
+measure 43
+measure 44
+measure 45
+measure 46
+measure 47
+measure 48
+measure 49
+measure 50
+measure 51
+measure 52
+measure 53
+measure 54
+measure 55
+measure 56
+measure 57
+measure 58
+measure 59
+measure 60
+measure 61
+measure 62
+measure 63
+measure 64
+measure 65
+measure 66
+measure 67
+measure 68
+measure 69
+measure 70
+measure 71
+measure 72
+measure 73
+measure 74
+measure 75
+measure 76
+measure 77
+measure 78
+measure 79
+measure 80
+measure 81
+measure 82
+measure 83
+measure 84
+measure 85
+measure 86
+measure 87
+measure 88
+measure 89
+measure 90
+measure 91
+measure 92
+measure 93
+measure 94
+measure 95
+measure 96
+measure 97
+measure 98
+measure 99
+measure 100
+measure 101
+measure 102
+measure 103
+measure 104
+measure 105
+measure 106
+measure 107
+measure 108
+measure 109
+measure 110
+measure 111
+measure 112
+measure 113
+measure 114
+measure 115
+measure 116
+measure 117
+measure 118
+measure 119
+measure 120
+measure 121
+measure 122
+measure 123
+measure 124
+measure 125
+measure 126
+measure 127
+measure 128
+measure 129
+measure 130
+measure 131
+measure 132
+measure 133
+measure 134
+measure 135
+measure 136
+measure 137
+measure 138
+measure 139
+measure 140
+measure 141
+measure 142
+measure 143
+measure 144
+measure 145
+measure 146
+measure 147
+measure 148
+measure 149
+measure 150
+measure 151
+measure 152
+measure 153
+measure 154
+measure 155
+measure 156
+measure 157
+measure 158
+measure 159
+measure 160
+measure 161
+measure 162
+measure 163
+measure 164
+measure 165
+measure 166
+measure 167
+measure 168
+measure 169
+measure 170
+measure 171
+measure 172
+measure 173
+measure 174
+measure 175
+measure 176
+measure 177
+measure 178
+measure 179
+measure 180
+measure 181
+measure 182
+measure 183
+measure 184
+measure 185
+measure 186
+measure 187
+measure 188
+measure 189
+measure 190
+measure 191
+measure 192
+measure 193
+measure 194
+measure 195
+measure 196
+measure 197
+measure 198
+measure 199

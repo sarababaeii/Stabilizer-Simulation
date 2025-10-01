@@ -1,0 +1,18 @@
+Outcome of measuring qubit 5: 1  (random)
+
+Outcome of measuring qubit 6: 0  (random)
+
+Outcome of measuring qubit 7: 0  (random)
+
+Outcome of measuring qubit 8: 1  (random)
+
+Outcome of measuring qubit 0: 0  (random)
+
+Outcome of measuring qubit 1: 0  (random)
+
+Outcome of measuring qubit 2: 0  (random)
+
+Outcome of measuring qubit 3: 0  (random)
+
+Outcome of measuring qubit 4: 0
+

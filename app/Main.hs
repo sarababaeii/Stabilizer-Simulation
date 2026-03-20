@@ -1,8 +1,14 @@
 module Main where
 
 import Quantum
+    ( MeasureResult(..),
+      Measure(M, qubit),
+      Gate(CX, H, S, target, control),
+      QuantumInstruction(..),
+      Circuit(..) )
 import PauliOperator
 import StabilizerSimulation
+    ( Tableau, initialTableau, applyGate', measure )
 
 import System.Random (StdGen, getStdGen)
 import System.Environment (getArgs)

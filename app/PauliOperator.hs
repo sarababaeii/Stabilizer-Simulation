@@ -187,3 +187,7 @@ showPauli Pauli {xBits = xs, zBits = zs, phaseBit = r} =
 showPaulies :: [Pauli] -> String
 showPaulies [] = ";\n"
 showPaulies (p:ps) = showPauli p ++ showPaulies ps
+
+
+-- TODO: implement a more efficient clearBit function, which is O(n) instead of O(4n) ????
+-- TODO: lattice operations and Kleene algebra operations.

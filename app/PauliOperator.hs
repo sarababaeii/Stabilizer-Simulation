@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE InstanceSigs #-}
 {- HLINT ignore "Use list literal pattern" -}
 
 module PauliOperator
@@ -15,7 +16,6 @@ module PauliOperator
 , groupOp
 , isInCompBasis
 , firstNonCompBasisPauli
-, showPaulies
 , pauliToString
 , pauliFromString
 ) where
@@ -33,10 +33,17 @@ import GHC.Generics (Generic)
 data Pauli = Pauli { xBits :: BitVector
                    , zBits :: BitVector
                    , phaseBit :: Bit
-                   } deriving (Generic, Eq, Show, Read)
+                   } deriving (Generic, Eq, Read)
+
+instance Show Pauli where
+    show :: Pauli -> String
+    show Pauli {xBits = xs, zBits = zs, phaseBit = r} =
+        "[ " ++ show (toBits xs) ++ " | " ++ show (toBits zs) ++ " | " ++ show r ++ " ]" ++ "\n"
 
 instance NFData BitVector where
+    rnf :: BitVector -> ()
     rnf bv = bv `seq` ()
+
 instance NFData Pauli
 
 phaseBool :: Pauli -> Bool
@@ -122,7 +129,7 @@ phaseAfterGroupOp :: Pauli -> Pauli -> Bit
 phaseAfterGroupOp p1 p2
     | r' `mod` 4 == 0 = 0
     | r' `mod` 4 == 2 = 1
-    | otherwise       = error ("Error: Paulies don't commute: " ++ showPauli p1 ++ " and " ++ showPauli p2)
+    | otherwise       = error ("Error: Paulies don't commute: " ++ show p1 ++ " and " ++ show p2)
     where
         n = size (xBits p1)
         gs = [g (xBits p1 !. i) (zBits p1 !. i) (toInt (xBits p2 !. i)) (toInt (zBits p2 !. i)) | i <- [0 .. n - 1]]
@@ -195,14 +202,6 @@ randomBit gen = (toBit b, gen')
     where (b, gen') = random gen :: (Bool, StdGen)
 
 -- Testing
-showPauli :: Pauli -> String
-showPauli Pauli {xBits = xs, zBits = zs, phaseBit = r} =
-    "[ " ++ show (toBits xs) ++ " | " ++ show (toBits zs) ++ " | " ++ show r ++ " ]" ++ "\n"
-
-showPaulies :: [Pauli] -> String
-showPaulies [] = ";\n"
-showPaulies (p:ps) = showPauli p ++ showPaulies ps
-
 pauliToString :: Pauli -> String
 pauliToString Pauli {xBits = xs, zBits = zs, phaseBit = r} =
     let n = size xs

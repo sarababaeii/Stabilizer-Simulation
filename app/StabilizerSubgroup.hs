@@ -1,3 +1,4 @@
+{-# LANGUAGE InstanceSigs #-}
 module StabilizerSubgroup where
 
 import PauliOperator
@@ -6,7 +7,12 @@ import Data.Maybe (isNothing)
 
 data StabSubgroup = Tableau { qubitNum :: Int
                             , generators :: [Pauli]
-                            } deriving (Eq, Show, Read)
+                            } deriving (Eq, Read)
+
+instance Show StabSubgroup where
+    show :: StabSubgroup -> String
+    show Tableau {qubitNum = _, generators = paulies} =
+        show paulies
 
 -- Gaussian elimination
 toEchelonForm :: StabSubgroup -> StabSubgroup
@@ -43,10 +49,6 @@ eliminateBelowPivot :: Int -> [Pauli] -> [Pauli]
 eliminateBelowPivot c (p:ps) = map (\q -> if bitAt c q == 1 then groupOp p q else q) ps
 
 -- Testing
-showStabSubgroup :: StabSubgroup -> String
-showStabSubgroup Tableau {qubitNum = _, generators = paulies} =
-    showPaulies paulies
-
 tableauToString :: StabSubgroup -> String
 tableauToString Tableau {qubitNum = _, generators = paulies} =
     unlines $ map pauliToString paulies

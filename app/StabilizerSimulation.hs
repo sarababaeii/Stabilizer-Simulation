@@ -1,11 +1,11 @@
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module StabilizerSimulation
 ( Tableau(..)
 , initialTableau
 , applyGate'
 , measure
-, showTableau
 ) where
 
 import Quantum (Gate(..), Measure(..), MeasureResult(..))
@@ -19,7 +19,13 @@ import GHC.Generics (Generic)
 data Tableau = Tableau { qubitNum :: Int
                        , destabilizers :: [Pauli]
                        , stabilizers :: [Pauli]
-                       } deriving (Generic, Eq, Show, Read)
+                       } deriving (Generic, Eq, Read)
+
+instance Show Tableau where
+    show :: Tableau -> String
+    show Tableau {qubitNum = _, destabilizers = destabs, stabilizers = stabs} =
+        show (destabs ++ stabs)
+
 instance NFData Tableau
 
 initialTableau :: Int -> Tableau
@@ -98,8 +104,3 @@ filterByFirst p (x:xs) (y:ys)
 
 extractValue :: Maybe a -> a
 extractValue (Just x) = x
-
--- Testing
-showTableau :: Tableau -> String
-showTableau Tableau {qubitNum = _, destabilizers = destabs, stabilizers = stabs} =
-    showPaulies destabs ++ "---------------" ++ showPaulies stabs

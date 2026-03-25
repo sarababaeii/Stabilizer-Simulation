@@ -24,7 +24,7 @@ instance NFData Tableau
 
 initialTableau :: Int -> Tableau
 initialTableau n = Tableau {qubitNum = n, destabilizers = destabs, stabilizers = stabs}
-    where 
+    where
         destabs = [xPauli n i | i <- [0..(n - 1)]]
         stabs = [zPauli n i | i <- [0..(n - 1)]]
 
@@ -33,15 +33,15 @@ initialTableau n = Tableau {qubitNum = n, destabilizers = destabs, stabilizers =
 -------------
 applyGate' :: Gate -> Tableau -> Tableau
 applyGate' g Tableau {qubitNum = n, destabilizers = destabs, stabilizers = stabs} =
-    let destabs' = map (\p -> applyGate g p) destabs
-        stabs' = map (\p -> applyGate g p) stabs
+    let destabs' = map (applyGate g) destabs
+        stabs' = map (applyGate g) stabs
     in Tableau {qubitNum = n, destabilizers = destabs', stabilizers = stabs'}
 
 measure :: Measure -> Tableau -> StdGen -> ((Tableau, MeasureResult), StdGen)
 measure M {qubit = a} t gen
     | isNothing pivot = ((t, determinateMeasure a t), gen)
     | otherwise       = randomMeasure (extractValue pivot) a t gen
-    where 
+    where
         pivot = firstNonCompBasisPauli a (stabilizers t)
 
 determinateMeasure :: Int -> Tableau -> MeasureResult
@@ -57,8 +57,8 @@ randomMeasure pivot a Tableau {qubitNum = n, destabilizers = destabs, stabilizer
         (stabs', gen') = rowsAfterRandomMeas True pivot 0 a stabs gen
         pInd = snd pivot
         res = phaseBool (stabs' !! pInd)
-    in ((Tableau {qubitNum = n, destabilizers = destabs', stabilizers = stabs'}, 
-            MR {qubit' = a, result = res, isRandom = True}), 
+    in ((Tableau {qubitNum = n, destabilizers = destabs', stabilizers = stabs'},
+            MR {qubit' = a, result = res, isRandom = True}),
             gen')
 
 -------------------
@@ -67,11 +67,11 @@ randomMeasure pivot a Tableau {qubitNum = n, destabilizers = destabs, stabilizer
 rowsAfterRandomMeas :: Bool -> (Pauli, Int) -> Int -> Int -> [Pauli] -> StdGen -> ([Pauli], StdGen)
 rowsAfterRandomMeas _ _ _ _ [] gen = ([], gen)
 rowsAfterRandomMeas isStabs (p, pInd) ind a (x:xs) gen
-    | ind == pInd = 
+    | ind == pInd =
         let (p', gen') = (pivotAfterRandomMeas isStabs p a gen)
             (rest, gen'') = rowsAfterRandomMeas isStabs (p, pInd) (ind + 1) a xs gen'
         in ((p':rest), gen'')
-    | otherwise   = 
+    | otherwise   =
         let (rest, gen') = rowsAfterRandomMeas isStabs (p, pInd) (ind + 1) a xs gen
         in (((nonPivotsAfterRandomMeas p x a) : rest), gen')
 

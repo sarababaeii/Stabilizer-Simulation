@@ -1,8 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE InstanceSigs #-}
-{- HLINT ignore "Use list literal pattern" -}
 
 module PauliOperator
 ( Pauli(..)
@@ -21,12 +19,13 @@ module PauliOperator
 ) where
 
 import Quantum (Gate(..))
+import BitUtils
 
 import Data.Bits
 import Data.Bit
 import Data.BitVector
 
-import System.Random (StdGen, random)
+import System.Random (StdGen)
 import Control.DeepSeq (NFData(..))
 import GHC.Generics (Generic)
 
@@ -51,8 +50,8 @@ phaseBool p = unBit (phaseBit p)
 
 bitAt :: Int -> Pauli -> Bit
 bitAt i Pauli {xBits = xs, zBits = zs, phaseBit = r}
-  | i < n   = toBit (xs !. i)
-  | i < 2 * n = toBit (zs !. (i - n))
+  | i < n   = boolToBit (xs !. i)
+  | i < 2 * n = boolToBit (zs !. (i - n))
   | i == 2 * n = r
   | otherwise = error ("Error: bitAt: index out of bounds: " ++ show i ++ " for Pauli with " ++ show n ++ " qubits")
   where
@@ -113,8 +112,8 @@ applyGate S {target = a} p =
 selectedBits :: Int -> Pauli -> (Bit, Bit)
 selectedBits i Pauli {xBits = xs, zBits = zs, phaseBit = _} = (x, z)
     where
-        x = toBit (xs !. i)
-        z = toBit (zs !. i)
+        x = boolToBit (xs !. i)
+        z = boolToBit (zs !. i)
 
 -- (P, Q -> PQ)
 -- different from the paper
@@ -132,8 +131,8 @@ phaseAfterGroupOp p1 p2
     | otherwise       = error ("Error: Paulies don't commute: " ++ show p1 ++ " and " ++ show p2)
     where
         n = size (xBits p1)
-        gs = [g (xBits p1 !. i) (zBits p1 !. i) (toInt (xBits p2 !. i)) (toInt (zBits p2 !. i)) | i <- [0 .. n - 1]]
-        r' = 2 * toInt' (phaseBit p1) + 2 * toInt' (phaseBit p2) + sum gs
+        gs = [g (xBits p1 !. i) (zBits p1 !. i) (boolToInt (xBits p2 !. i)) (boolToInt (zBits p2 !. i)) | i <- [0 .. n - 1]]
+        r' = 2 * bitToInt (phaseBit p1) + 2 * bitToInt (phaseBit p2) + sum gs
 
 g :: Bool -> Bool -> Int -> Int -> Int
 g False False _ _  = 0
@@ -185,22 +184,6 @@ zeroBV n = t `xor` t
 singleOneBV :: Int -> Int -> BitVector
 singleOneBV n i = zeroExtend i (bit (n - i - 1))
 
-toBit :: Bool -> Bit
-toBit False = 0
-toBit True = 1
-
-toInt :: Bool -> Int
-toInt False = 0
-toInt True = 1
-
-toInt' :: Bit -> Int
-toInt' 0 = 0
-toInt' 1 = 1
-
-randomBit :: StdGen -> (Bit, StdGen)
-randomBit gen = (toBit b, gen')
-    where (b, gen') = random gen :: (Bool, StdGen)
-
 -- Testing
 pauliToString :: Pauli -> String
 pauliToString Pauli {xBits = xs, zBits = zs, phaseBit = r} =
@@ -234,8 +217,6 @@ parseSign ""         = error "Error: parseSign: invalid Pauli string: empty stri
 parseSign ('-':[])   = error "Error: parseSign: invalid Pauli string: empty string"
 parseSign ('-':xs)   = (1, xs)
 parseSign xs         = (0, xs)
-
-
 
 -- TODO: implement a more efficient clearBit function, which is O(n) instead of O(4n) ????
 -- TODO: lattice operations and Kleene algebra operations.

@@ -10,6 +10,7 @@ module StabilizerSimulation
 
 import Quantum (Gate(..), Measure(..), MeasureResult(..))
 import PauliOperator
+import Utils (extractValue, filterSecondByFirst)
 
 import Data.Maybe (isNothing)
 import System.Random (StdGen)
@@ -53,7 +54,7 @@ measure M {qubit = a} t gen
 determinateMeasure :: Int -> Tableau -> MeasureResult
 determinateMeasure a Tableau {qubitNum = n, destabilizers = destabs, stabilizers = stabs} =
     let id = identityPauli n
-        ps = filterByFirst (\p -> not $ isInCompBasis a p) destabs stabs
+        ps = filterSecondByFirst (\p -> not $ isInCompBasis a p) destabs stabs
         sump = foldl (\acc p -> (groupOp p acc)) id ps
     in MR {qubit' = a, result = phaseBool sump, isRandom = False}
 
@@ -89,18 +90,3 @@ nonPivotsAfterRandomMeas p q a
 pivotAfterRandomMeas :: Bool -> Pauli -> Int -> StdGen -> (Pauli, StdGen)
 pivotAfterRandomMeas False p _ gen = (p, gen) -- Destabilizer
 pivotAfterRandomMeas True p a gen = measuringPauli p a gen
-
-----------------------
--- Auxiliary functions
-----------------------
-filterByFirst :: (a -> Bool) -> [a] -> [b] -> [b]
-filterByFirst _ [] _ = []
-filterByFirst _ _ [] = []
-filterByFirst p (x:xs) (y:ys)
-    | p x       = y:rest
-    | otherwise = rest
-    where
-        rest = filterByFirst p xs ys
-
-extractValue :: Maybe a -> a
-extractValue (Just x) = x

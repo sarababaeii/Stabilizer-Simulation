@@ -2,6 +2,7 @@
 module StabilizerSubgroup where
 
 import PauliOperator
+import Utils (extractValue)
 
 import Data.Maybe (isNothing)
 
@@ -52,9 +53,6 @@ eliminateBelowPivot c (p:ps) = map (\q -> if bitAt c q == 1 then groupOp p q els
 tableauToString :: StabSubgroup -> String
 tableauToString Tableau {qubitNum = _, generators = paulies} =
     unlines $ map pauliToString paulies
-
-extractValue :: Maybe a -> a
-extractValue (Just x) = x
 
 nxz = pauliFromString "-XZ"
 zx = pauliFromString "ZX"

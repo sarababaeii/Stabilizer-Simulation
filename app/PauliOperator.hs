@@ -4,21 +4,26 @@
 
 module PauliOperator
 ( Pauli(..)
+, qubitCount
+, vectorLength
 , phaseBool
 , bitAt
 , identityPauli
+, negIdentityPauli
 , xPauli
 , zPauli
-, measuringPauli
-, applyGate
+, isIdentity
 , groupOp
+, tensorProduct
+, applyGate
+, measuringPauli
 , isInCompBasis
 , firstNonCompBasisPauli
 , pauliToString
 , pauliFromString
 ) where
 
-import Quantum (Gate(..))
+import Quantum (Gate(..), Measure (qubit))
 import BitUtils
 
 import Data.Bits
@@ -36,8 +41,8 @@ data Pauli = Pauli { xBits :: BitVector
 
 instance Show Pauli where
     show :: Pauli -> String
-    show Pauli {xBits = xs, zBits = zs, phaseBit = r} =
-        "[ " ++ show (toBits xs) ++ " | " ++ show (toBits zs) ++ " | " ++ show r ++ " ]" ++ "\n"
+    show (Pauli xs zs c) =
+        "{" ++ show (bvToBits xs) ++ " | " ++ show (bvToBits zs) ++ " | " ++ show c ++ "}"
 
 instance NFData BitVector where
     rnf :: BitVector -> ()
@@ -45,37 +50,90 @@ instance NFData BitVector where
 
 instance NFData Pauli
 
+qubitCount :: Pauli -> Int
+qubitCount p = size (xBits p)
+
+vectorLength :: Pauli -> Int
+vectorLength p = 2 * qubitCount p + 1
+
 phaseBool :: Pauli -> Bool
 phaseBool p = unBit (phaseBit p)
 
 bitAt :: Int -> Pauli -> Bit
-bitAt i Pauli {xBits = xs, zBits = zs, phaseBit = r}
-  | i < n   = boolToBit (xs !. i)
-  | i < 2 * n = boolToBit (zs !. (i - n))
-  | i == 2 * n = r
-  | otherwise = error ("Error: bitAt: index out of bounds: " ++ show i ++ " for Pauli with " ++ show n ++ " qubits")
+bitAt i (Pauli xs zs c)
+  | i < n      = boolToBit (xs !. i)
+  | i < 2 * n  = boolToBit (zs !. (i - n))
+  | i == 2 * n = c
+  | otherwise  = error ("Error: bitAt: index out of bounds: " ++ show i ++ " for Pauli with " ++ show n ++ " qubits")
   where
     n = size xs
 
+---------------------------------------
+-- Constants
+---------------------------------------
 identityPauli :: Int -> Pauli
-identityPauli n = Pauli {xBits = z, zBits = z, phaseBit = 0}
+identityPauli n = Pauli z z 0
+    where
+        z = zeroBV n
+
+negIdentityPauli :: Int -> Pauli
+negIdentityPauli n = Pauli z z 1
     where
         z = zeroBV n
 
 xPauli :: Int -> Int -> Pauli
-xPauli n i = Pauli {xBits = xs, zBits = zs, phaseBit = 0}
+xPauli n i = Pauli xs zs 0
     where
         xs = singleOneBV n i
         zs = zeroBV n
 
 zPauli :: Int -> Int -> Pauli
-zPauli n i = Pauli {xBits = xs, zBits = zs, phaseBit = 0}
+zPauli n i = Pauli xs zs 0
     where
         xs = zeroBV n
         zs = singleOneBV n i
 
+isIdentity :: Pauli -> Bool
+isIdentity (Pauli xs zs c) = xs == 0 && zs == 0 && c == 0
+
 -----------------------------
 -- Operations
+-----------------------------
+-- (P, Q -> PQ)
+-- different from the paper
+groupOp :: Pauli -> Pauli -> Pauli
+groupOp p1 p2 = Pauli xs' zs' c'
+    where
+        c' = phaseAfterGroupOp p1 p2
+        xs' = xBits p1 `xor` xBits p2
+        zs' = zBits p1 `xor` zBits p2
+
+phaseAfterGroupOp :: Pauli -> Pauli -> Bit
+phaseAfterGroupOp p1 p2
+    | c' `mod` 4 == 0 = 0
+    | c' `mod` 4 == 2 = 1
+    | otherwise       = error ("Error: Paulies don't commute: " ++ show p1 ++ " and " ++ show p2)
+    where
+        n = qubitCount p1
+        gs = [generatedPhase (xBits p1 !. i) (zBits p1 !. i) 
+                (boolToInt (xBits p2 !. i)) (boolToInt (zBits p2 !. i)) | i <- [0 .. n - 1]]
+        c' = 2 * bitToInt (phaseBit p1) + 2 * bitToInt (phaseBit p2) + sum gs
+
+generatedPhase :: Bool -> Bool -> Int -> Int -> Int
+generatedPhase False False _ _  = 0
+generatedPhase False True x2 z2 = x2 * (1 - 2 * z2)
+generatedPhase True False x2 z2 = z2 * (2 * x2 - 1)
+generatedPhase True True x2 z2 = z2 - x2
+
+tensorProduct :: Pauli -> Pauli -> Pauli
+tensorProduct (Pauli xs1 zs1 c1) (Pauli xs2 zs2 c2) = Pauli xs zs c
+    where
+        xs = xs1 # xs2
+        zs = zs1 # zs2
+        c = c1 `xor` c2
+
+-----------------------------
+-- Simulation
 -----------------------------
 applyGate :: Gate -> Pauli -> Pauli
 applyGate CX {control = a, target = b} p =
@@ -110,43 +168,18 @@ applyGate S {target = a} p =
     in Pauli {xBits = xs, zBits = zs', phaseBit = r'}
 
 selectedBits :: Int -> Pauli -> (Bit, Bit)
-selectedBits i Pauli {xBits = xs, zBits = zs, phaseBit = _} = (x, z)
+selectedBits i (Pauli xs zs _) = (x, z)
     where
         x = boolToBit (xs !. i)
         z = boolToBit (zs !. i)
 
--- (P, Q -> PQ)
--- different from the paper
-groupOp :: Pauli -> Pauli -> Pauli
-groupOp p1 p2 =
-    let r' = phaseAfterGroupOp p1 p2
-        xs' = xBits p1 `xor` xBits p2
-        zs' = zBits p1 `xor` zBits p2
-    in Pauli {xBits = xs', zBits = zs', phaseBit = r'}
-
-phaseAfterGroupOp :: Pauli -> Pauli -> Bit
-phaseAfterGroupOp p1 p2
-    | r' `mod` 4 == 0 = 0
-    | r' `mod` 4 == 2 = 1
-    | otherwise       = error ("Error: Paulies don't commute: " ++ show p1 ++ " and " ++ show p2)
-    where
-        n = size (xBits p1)
-        gs = [g (xBits p1 !. i) (zBits p1 !. i) (boolToInt (xBits p2 !. i)) (boolToInt (zBits p2 !. i)) | i <- [0 .. n - 1]]
-        r' = 2 * bitToInt (phaseBit p1) + 2 * bitToInt (phaseBit p2) + sum gs
-
-g :: Bool -> Bool -> Int -> Int -> Int
-g False False _ _  = 0
-g False True x2 z2 = x2 * (1 - 2 * z2)
-g True False x2 z2 = z2 * (2 * x2 - 1)
-g True True x2 z2 = z2 - x2
-
 measuringPauli :: Pauli -> Int -> StdGen -> (Pauli, StdGen)
-measuringPauli p a gen = (Pauli {xBits = xs, zBits = zs, phaseBit = r}, gen')
+measuringPauli p a gen = (Pauli xs zs c, gen')
     where
-        n = size (xBits p)
+        n = qubitCount p
         xs = zeroBV n
         zs = zeroExtend a (bit (n - 1 - a))
-        (r, gen') = randomBit gen
+        (c, gen') = randomBit gen
 
 isInCompBasis :: Int -> Pauli -> Bool
 isInCompBasis i p = Prelude.not x
@@ -162,35 +195,13 @@ findFirstNonCompBasisPauli ind a (p:ps)
     | isInCompBasis a p = findFirstNonCompBasisPauli (ind + 1) a ps
     | otherwise         = Just (p, ind)
 
----------------------------------------
--- Auxiliary functions
----------------------------------------
--- Code conventions: bit index i is the i-th qubit from the left, counting from 0. So the rightmost bit is index n-1, where n is the total number of qubits.
-
-replaceBit :: Int -> Bit -> BitVector -> BitVector
-replaceBit i 1 bv = setBit bv (size bv - 1 - i)
-replaceBit i 0 bv = clearBit' bv (size bv - 1 - i)
-
-clearBit' :: BitVector -> Int -> BitVector  -- O(4n)
-clearBit' bv i =
-    let nZero = bv .&. zeroBits     -- O(n)
-        p = setBit nZero i          -- O(n)
-    in bv .&. (complement p)        -- O(2n)
-
-zeroBV :: Int -> BitVector
-zeroBV n = t `xor` t
-    where t = singleOneBV n (n - 1)
-
-singleOneBV :: Int -> Int -> BitVector
-singleOneBV n i = zeroExtend i (bit (n - i - 1))
-
 -- Testing
 pauliToString :: Pauli -> String
-pauliToString Pauli {xBits = xs, zBits = zs, phaseBit = r} =
-    let n = size xs
+pauliToString (Pauli xs zs c) = sign ++ body
+    where
+        n = size xs
+        sign = if c == 1 then "-" else ""
         body = [pauliChar (xs !. i) (zs !. i) | i <- [0 .. n - 1]]
-        sign = if r == 1 then "-" else ""
-    in sign ++ body
 
 pauliChar :: Bool -> Bool -> Char
 pauliChar False False = 'I'
@@ -199,24 +210,21 @@ pauliChar False True = 'Z'
 pauliChar True True = 'Y'
 
 pauliFromString :: String -> Pauli
-pauliFromString str = Pauli {xBits = xs, zBits = zs, phaseBit = r}
+pauliFromString str = Pauli xs zs c
     where
-        (r, body) = parseSign str
-        xs = fromBits [x | c <- body, let (x, _) = pauliBits c]
-        zs = fromBits [z | c <- body, let (_, z) = pauliBits c]
+        (c, body) = parseSign str
+        xs = fromBits [x | chr <- body, let (x, _) = pauliBits chr]
+        zs = fromBits [z | chr <- body, let (_, z) = pauliBits chr]
 
 pauliBits :: Char -> (Bool, Bool) -- can I convert Bool to Bit?
 pauliBits 'I' = (False, False)
 pauliBits 'X' = (True , False)
 pauliBits 'Z' = (False, True )
 pauliBits 'Y' = (True , True )
-pauliBits c   = error ("Error: pauliBits: invalid Pauli character: " ++ show c)
+pauliBits chr   = error ("Error: pauliBits: invalid Pauli character: " ++ show chr)
 
 parseSign :: String -> (Bit, String)
 parseSign ""         = error "Error: parseSign: invalid Pauli string: empty string"
 parseSign ('-':[])   = error "Error: parseSign: invalid Pauli string: empty string"
 parseSign ('-':xs)   = (1, xs)
 parseSign xs         = (0, xs)
-
--- TODO: implement a more efficient clearBit function, which is O(n) instead of O(4n) ????
--- TODO: lattice operations and Kleene algebra operations.

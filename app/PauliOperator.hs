@@ -28,7 +28,7 @@ import BitUtils
 
 import Data.Bits
 import Data.Bit
-import Data.BitVector
+import Data.BitVector (BitVector, size, (!.), (#), zeroExtend, fromBits)
 
 import System.Random (StdGen)
 import Control.DeepSeq (NFData(..))
@@ -37,12 +37,14 @@ import GHC.Generics (Generic)
 data Pauli = Pauli { xBits :: BitVector
                    , zBits :: BitVector
                    , phaseBit :: Bit
+                   , iBit :: Bit
                    } deriving (Generic, Eq, Read)
 
 instance Show Pauli where
     show :: Pauli -> String
-    show (Pauli xs zs c) =
-        "{" ++ show (bvToBits xs) ++ " | " ++ show (bvToBits zs) ++ " | " ++ show c ++ "}"
+    show (Pauli xs zs c d) =
+        "{" ++ show (bvToBits xs) ++ " | " ++ show (bvToBits zs) ++ " | " ++
+                show c ++ " | " ++ show d ++ "}"
 
 instance NFData BitVector where
     rnf :: BitVector -> ()
@@ -54,17 +56,19 @@ qubitCount :: Pauli -> Int
 qubitCount p = size (xBits p)
 
 vectorLength :: Pauli -> Int
-vectorLength p = 2 * qubitCount p + 1
+vectorLength p = 2 * qubitCount p + 2
 
 phaseBool :: Pauli -> Bool
 phaseBool p = unBit (phaseBit p)
 
 bitAt :: Int -> Pauli -> Bit
-bitAt i (Pauli xs zs c)
-  | i < n      = boolToBit (xs !. i)
-  | i < 2 * n  = boolToBit (zs !. (i - n))
-  | i == 2 * n = c
-  | otherwise  = error ("Error: bitAt: index out of bounds: " ++ show i ++ " for Pauli with " ++ show n ++ " qubits")
+bitAt i (Pauli xs zs c d)
+  | i < n          = boolToBit (xs !. i)
+  | i < 2 * n      = boolToBit (zs !. (i - n))
+  | i == 2 * n     = c
+  | i == 2 * n + 1 = d
+  | otherwise  = error ("Error: bitAt: index out of bounds: " ++ show i ++ 
+                            " for Pauli with " ++ show n ++ " qubits")
   where
     n = size xs
 
@@ -72,65 +76,84 @@ bitAt i (Pauli xs zs c)
 -- Constants
 ---------------------------------------
 identityPauli :: Int -> Pauli
-identityPauli n = Pauli z z 0
+identityPauli n = Pauli {xBits = z, zBits = z, phaseBit = 0, iBit = 0}
     where
         z = zeroBV n
 
 negIdentityPauli :: Int -> Pauli
-negIdentityPauli n = Pauli z z 1
+negIdentityPauli n = Pauli {xBits = z, zBits = z, phaseBit = 1, iBit = 0}
     where
         z = zeroBV n
 
 xPauli :: Int -> Int -> Pauli
-xPauli n i = Pauli xs zs 0
+xPauli n i = Pauli {xBits = xs, zBits = zs, phaseBit = 0, iBit = 0}
     where
         xs = singleOneBV n i
         zs = zeroBV n
 
 zPauli :: Int -> Int -> Pauli
-zPauli n i = Pauli xs zs 0
+zPauli n i = Pauli {xBits = xs, zBits = zs, phaseBit = 0, iBit = 0}
     where
         xs = zeroBV n
         zs = singleOneBV n i
 
 isIdentity :: Pauli -> Bool
-isIdentity (Pauli xs zs c) = xs == 0 && zs == 0 && c == 0
+isIdentity (Pauli xs zs c d) = xs == 0 && zs == 0 && c == 0 && d == 0
 
+-- is
 -----------------------------
 -- Operations
 -----------------------------
 -- (P, Q -> PQ)
 -- different from the paper
 groupOp :: Pauli -> Pauli -> Pauli
-groupOp p1 p2 = Pauli xs' zs' c'
+groupOp p1 p2 = Pauli {xBits = xs', zBits = zs', phaseBit = c', iBit = d'}
     where
-        c' = phaseAfterGroupOp p1 p2
+        (c', d') = phaseAfterGroupOp p1 p2
         xs' = xBits p1 `xor` xBits p2
         zs' = zBits p1 `xor` zBits p2
 
-phaseAfterGroupOp :: Pauli -> Pauli -> Bit
-phaseAfterGroupOp p1 p2
-    | c' `mod` 4 == 0 = 0
-    | c' `mod` 4 == 2 = 1
-    | otherwise       = error ("Error: Paulies don't commute: " ++ show p1 ++ " and " ++ show p2)
+phaseAfterGroupOp :: Pauli -> Pauli -> (Bit, Bit)
+phaseAfterGroupOp (Pauli xs1 zs1 c1 d1) (Pauli xs2 zs2 c2 d2)
+    | p `mod` 4 == 0 = (0, 0)
+    | p `mod` 4 == 2 = (1, 0)
+    | p `mod` 4 == 1 = (0, 1)
+    | p `mod` 4 == 3 = (1, 1)
     where
-        n = qubitCount p1
-        gs = [generatedPhase (xBits p1 !. i) (zBits p1 !. i) 
-                (boolToInt (xBits p2 !. i)) (boolToInt (zBits p2 !. i)) | i <- [0 .. n - 1]]
-        c' = 2 * bitToInt (phaseBit p1) + 2 * bitToInt (phaseBit p2) + sum gs
+        n = size xs1
+        gs = [generatedPhase (xs1 !. i) (zs1 !. i) (xs2 !. i) (zs2 !. i) | i <- [0 .. n - 1]]
+        p = sum gs + bitPairToInt c1 d1 + bitPairToInt c2 d2 
 
-generatedPhase :: Bool -> Bool -> Int -> Int -> Int
-generatedPhase False False _ _  = 0
-generatedPhase False True x2 z2 = x2 * (1 - 2 * z2)
-generatedPhase True False x2 z2 = z2 * (2 * x2 - 1)
-generatedPhase True True x2 z2 = z2 - x2
+generatedPhase :: Bool -> Bool -> Bool -> Bool -> Int
+generatedPhase x1 z1 x2 z2
+    | not x1 && not z1 = 0
+    | not x1 &&     z1 = ix2 * (1 - 2 * iz2)
+    |     x1 && not z1 = iz2 * (2 * ix2 - 1)
+    |     x1 &&     z1 = iz2 - ix2
+    where
+        ix2 = boolToInt x2
+        iz2 = boolToInt z2
 
 tensorProduct :: Pauli -> Pauli -> Pauli
-tensorProduct (Pauli xs1 zs1 c1) (Pauli xs2 zs2 c2) = Pauli xs zs c
+tensorProduct (Pauli xs1 zs1 c1 d1) (Pauli xs2 zs2 c2 d2) =
+                Pauli {xBits = xs, zBits = zs, phaseBit = c, iBit = d}
     where
         xs = xs1 # xs2
         zs = zs1 # zs2
-        c = c1 `xor` c2
+        c = c1 `xor` c2 `xor` (d1 .&. d2)
+        d = d1 `xor` d2
+
+-- cd P_1 \otimes ... \otimes P_{2n} -> 
+--     (P_1 \otimes ... \otimes P_n, cd P_{n+1} \otimes ... \otimes P_{2n})
+splitInOutPauli :: Pauli -> (Pauli, Pauli)
+splitInOutPauli (Pauli xs zs c d)
+    | odd n = error ("Error: splitInOutPauli: Pauli must have even number of qubits: " ++ show n)
+    | otherwise = (Pauli {xBits = xIn, zBits = zIn, phaseBit = 0, iBit = 0},
+                    Pauli {xBits = xOut, zBits = zOut, phaseBit = c, iBit = d})
+    where
+        n = size xs
+        (xIn, xOut) = splitAtBV (n `div` 2) xs
+        (zIn, zOut) = splitAtBV (n `div` 2) zs
 
 -----------------------------
 -- Simulation
@@ -147,7 +170,7 @@ applyGate CX {control = a, target = b} p =
         xs' = replaceBit b xb' xs
         za' = za `xor` zb
         zs' = replaceBit a za' zs
-    in Pauli {xBits = xs', zBits = zs', phaseBit = r'}
+    in Pauli {xBits = xs', zBits = zs', phaseBit = r', iBit = 0}
 applyGate H {target = a} p =
     let xs = xBits p
         zs = zBits p
@@ -156,7 +179,7 @@ applyGate H {target = a} p =
         r' = r `xor` (xa .&. za)
         xs' = replaceBit a za xs
         zs' = replaceBit a xa zs
-    in Pauli {xBits = xs', zBits = zs', phaseBit = r'}
+    in Pauli {xBits = xs', zBits = zs', phaseBit = r', iBit = 0}
 applyGate S {target = a} p =
     let xs = xBits p
         zs = zBits p
@@ -165,16 +188,16 @@ applyGate S {target = a} p =
         r' = r `xor` (xa .&. za)
         za' = xa `xor` za
         zs' = replaceBit a za' zs
-    in Pauli {xBits = xs, zBits = zs', phaseBit = r'}
+    in Pauli {xBits = xs, zBits = zs', phaseBit = r', iBit = 0}
 
 selectedBits :: Int -> Pauli -> (Bit, Bit)
-selectedBits i (Pauli xs zs _) = (x, z)
+selectedBits i (Pauli xs zs _ _) = (x, z)
     where
         x = boolToBit (xs !. i)
         z = boolToBit (zs !. i)
 
 measuringPauli :: Pauli -> Int -> StdGen -> (Pauli, StdGen)
-measuringPauli p a gen = (Pauli xs zs c, gen')
+measuringPauli p a gen = (Pauli {xBits = xs, zBits = zs, phaseBit = c, iBit = 0}, gen')
     where
         n = qubitCount p
         xs = zeroBV n
@@ -182,7 +205,7 @@ measuringPauli p a gen = (Pauli xs zs c, gen')
         (c, gen') = randomBit gen
 
 isInCompBasis :: Int -> Pauli -> Bool
-isInCompBasis i p = Prelude.not x
+isInCompBasis i p = not x
     where
          x = xBits p !. i
 
@@ -197,10 +220,11 @@ findFirstNonCompBasisPauli ind a (p:ps)
 
 -- Testing
 pauliToString :: Pauli -> String
-pauliToString (Pauli xs zs c) = sign ++ body
+pauliToString (Pauli xs zs c d) = phase ++ iPart ++ body
     where
         n = size xs
-        sign = if c == 1 then "-" else ""
+        phase = if c == 1 then "-" else ""
+        iPart = if d == 1 then "i" else ""
         body = [pauliChar (xs !. i) (zs !. i) | i <- [0 .. n - 1]]
 
 pauliChar :: Bool -> Bool -> Char
@@ -210,9 +234,9 @@ pauliChar False True = 'Z'
 pauliChar True True = 'Y'
 
 pauliFromString :: String -> Pauli
-pauliFromString str = Pauli xs zs c
+pauliFromString str = Pauli {xBits = xs, zBits = zs, phaseBit = c, iBit = d}
     where
-        (c, body) = parseSign str
+        (c, d, body) = parsePhase str
         xs = fromBits [x | chr <- body, let (x, _) = pauliBits chr]
         zs = fromBits [z | chr <- body, let (_, z) = pauliBits chr]
 
@@ -223,8 +247,8 @@ pauliBits 'Z' = (False, True )
 pauliBits 'Y' = (True , True )
 pauliBits chr   = error ("Error: pauliBits: invalid Pauli character: " ++ show chr)
 
-parseSign :: String -> (Bit, String)
-parseSign ""         = error "Error: parseSign: invalid Pauli string: empty string"
-parseSign ('-':[])   = error "Error: parseSign: invalid Pauli string: empty string"
-parseSign ('-':xs)   = (1, xs)
-parseSign xs         = (0, xs)
+parsePhase :: String -> (Bit, Bit, String)
+parsePhase ('i':xs)     = (0, 1, xs)
+parsePhase ('-':'i':xs) = (1, 1, xs)
+parsePhase ('-':xs)     = (1, 0, xs)
+parsePhase xs           = (0, 0, xs)

@@ -3,9 +3,11 @@ module BitUtils
 , boolToInt
 , bitToInt
 , bvToBits
+, bitPairToInt
 , zeroBV
 , singleOneBV
 , replaceBit
+, splitAtBV
 , randomBit
 ) where
 
@@ -13,7 +15,7 @@ module BitUtils
 
 import Data.Bit
 import Data.BitVector
-import System.Random (StdGen, random)
+import System.Random (StdGen, random, RandomGen (split))
 
 ---------------------------------------
 -- Type conversions
@@ -34,7 +36,13 @@ bvToBits :: BV -> [Bit]
 bvToBits = map boolToBit . toBits
 
 ---------------------------------------
--- Constants
+-- Bit Operations
+---------------------------------------
+bitPairToInt :: Bit -> Bit -> Int
+bitPairToInt b1 b2 = 2 * bitToInt b1 + bitToInt b2
+
+---------------------------------------
+-- BV Constants
 ---------------------------------------
 zeroBV :: Int -> BitVector
 zeroBV n = t `xor` t
@@ -44,7 +52,7 @@ singleOneBV :: Int -> Int -> BitVector
 singleOneBV n i = zeroExtend i (bit (n - i - 1))
 
 ---------------------------------------
--- Operations
+-- BV Operations
 ---------------------------------------
 replaceBit :: Int -> Bit -> BitVector -> BitVector
 replaceBit i 1 bv = setBit bv (size bv - 1 - i)
@@ -55,6 +63,16 @@ clearBit' bv i =
     let nZero = bv .&. zeroBits     -- O(n)
         p = setBit nZero i          -- O(n)
     in bv .&. complement p          -- O(2n)
+
+splitAtBV :: Int -> BitVector -> (BitVector, BitVector)
+splitAtBV i bv = (takeBV i bv, dropBV i bv)
+
+takeBV :: Int -> BitVector -> BitVector
+takeBV i bv = shiftR bv (size bv - i)
+
+dropBV :: Int -> BitVector -> BitVector
+dropBV i bv = bv .&. mask
+    where mask = bit (size bv - i) - 1
 
 ---------------------------------------
 -- Random bit generation

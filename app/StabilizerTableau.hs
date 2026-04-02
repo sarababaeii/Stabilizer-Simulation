@@ -3,7 +3,13 @@
 
 module StabilizerTableau
 ( StabTableau(..)
-, infeasibleTableau
+, BiTableau(..)
+, trivialTableau
+, unsatTableau
+, intersection
+, union
+, normalize
+, projectOut
 ) where
 
 import PauliOperator
@@ -59,7 +65,8 @@ instance TableauRow (Pauli, Pauli) where
     getBit i (p1, p2)
         | i < width p1       = bitAt i p1
         | i < width (p1, p2) = bitAt (i - width p1) p2
-        | otherwise          = error ("Error: getBit: index out of bounds: " ++ show i ++ " for BiTableau with " ++ show (width p1, width p2) ++ " qubits")
+        | otherwise          = error ("Error: getBit: index out of bounds: " ++ show i ++
+                                        " for BiTableau with width " ++ show (width (p1, p2)))
 
     eliminateWith :: Int -> (Pauli, Pauli) -> (Pauli, Pauli) -> (Pauli, Pauli)
     eliminateWith col (pivot1, pivot2) (row1, row2)
@@ -69,36 +76,66 @@ instance TableauRow (Pauli, Pauli) where
 -----------------------------
 -- Constans
 -----------------------------
-infeasibleTableau :: Int -> StabTableau
-infeasibleTableau n = Tableau n [negIdentityPauli n]
+zeroTableau :: Int -> Int -> StabTableau
+zeroTableau n k = Tableau {qubitNum = n, generators = replicate k (identityPauli n)}
 
+trivialTableau :: Int -> StabTableau
+trivialTableau n = zeroTableau n 1
 
+isTrivial :: StabTableau -> Bool
+isTrivial (Tableau n gens) = null gens -- || all isIdentity gens
 
+unsatTableau :: Int -> StabTableau
+unsatTableau n = Tableau {qubitNum = n, generators = [negIdentityPauli n]}
 
+isUnsat :: StabTableau -> Bool
+isUnsat (Tableau n gens) = negIdentityPauli n `elem` gens || any ((== 1) . iBit) gens
+
+-----------------------------
+-- Operations
+-----------------------------
+-- Precondition: both tableaux are normalized
+intersection :: StabTableau -> StabTableau -> StabTableau
+intersection t1@(Tableau n1 gen1) t2@(Tableau n2 gen2)
+    | isUnsat t1 = t2
+    | isUnsat t2 = t1
+    | n1 /= n2   = error ("Tableaux must have the same number of qubits for intersection: " ++ show n1 ++ " vs " ++ show n2)
+    | otherwise  = projectOut BiTableau {qubitNums = (n1, n2), biGenerators = zip leftGens rightGens}
+    where
+        leftGens = gen1 ++ gen2
+        rightGens = gen1 ++ replicate (length gen2) (identityPauli n1)
+
+union :: StabTableau -> StabTableau -> StabTableau
+union t1@(Tableau n1 gen1) t2@(Tableau n2 gen2)
+    | isTrivial t1 = t2
+    | isTrivial t2 = t1
+    | n1 /= n2     = error ("Tableaux must have the same number of qubits for union: " ++ show n1 ++ " vs " ++ show n2)
+    | otherwise    = normalize Tableau {qubitNum = n1, generators = gen1 ++ gen2}
+
+-----------------------------
+-- Normalization
+-----------------------------
 normalize :: StabTableau -> StabTableau
 normalize (Tableau n gens)
-    | inf `elem` gens' = infeasibleTableau n
-    | otherwise        = Tableau n (removeZeroRows gens')
+    | isTrivial t' = trivialTableau n
+    | isUnsat t'   = unsatTableau n
+    | otherwise    = t'
     where
-        inf = head (generators (infeasibleTableau n))
-        gens' = toEchelonFormWithPivot 0 gens
+        gens' = takeWhile (not . isIdentity) $ toEchelonFormWithPivot 0 gens
+        t' = Tableau {qubitNum = n, generators = gens'}
 
-removeZeroRows :: [Pauli] -> [Pauli]
-removeZeroRows = takeWhile (not . isIdentity)
+projectOut :: BiTableau -> StabTableau
+projectOut bt = normalize Tableau {qubitNum = n', generators = gens'}
+    where
+        n' = snd (qubitNums bt)
+        gens = biGenerators (toEchelonFormBi bt)
+        gens' = map snd $ dropWhile (not . isIdentity . fst) gens
 
-stackVertical :: StabTableau -> StabTableau -> StabTableau
-stackVertical (Tableau n gens) (Tableau n' gens')
-    | n /= n'  = error ("Tableaux must have the same number of qubits for stacking: " ++ show n ++ " vs " ++ show n')
-    | otherwise = Tableau n (gens ++ gens')
-
------------------------------
--- Gaussian elimination
------------------------------
 toEchelonForm :: StabTableau -> StabTableau
-toEchelonForm (Tableau n gens) = Tableau n (toEchelonFormWithPivot 0 gens)
+toEchelonForm (Tableau n gens) = Tableau {qubitNum = n, generators = toEchelonFormWithPivot 0 gens}
 
 toEchelonFormBi :: BiTableau -> BiTableau
-toEchelonFormBi (BiTableau (n, n') gens) = BiTableau (n, n') (toEchelonFormWithPivot 0 gens)
+toEchelonFormBi (BiTableau (n, n') gens) = BiTableau {qubitNums = (n, n'), biGenerators = toEchelonFormWithPivot 0 gens}
 
 toEchelonFormWithPivot :: (TableauRow a) => Int -> [a] -> [a]
 toEchelonFormWithPivot _ [] = []
@@ -130,83 +167,54 @@ swapHeadWithRow i (x:xs) = y : before ++ [x] ++ after
 eliminateBelowPivot :: (TableauRow a) => Int -> [a] -> [a]
 eliminateBelowPivot col (pivot:rows) = map (eliminateWith col pivot) rows
 
------------------------------
--- Projection
------------------------------
--- projectOut :: Int -> StabTableau -> StabTableau
--- projectOut col (Tableau n gens) = Tableau (n - col) (map projectOutFromGen gens)
---     where
---         projectOutFromGen :: Pauli -> Pauli
---         projectOutFromGen p
---             | bitAt col p == 1 = groupOp p (generators (toEchelonForm (Tableau n gens)) !! col)
---             | otherwise        = p
-
-
-
-
--- projectOut (col, val) (Tableau n gens) = Tableau n (map projectOutFromGen gens)
---     where
---         projectOutFromGen :: Pauli -> Pauli
---         projectOutFromGen p
---             | bitAt col p == val = groupOp p (generators (toEchelonForm (Tableau n gens)) !! col)
---             | otherwise          = p
-
--- Current Pauli and Tableau design is ok.
--- Then, define the lattice and Kleene algebra modules.
--- Then see how you'd need to implement projection to be used by all of them.
-
------------------------------
--- Intersection and union
------------------------------
--- intersection :: StabTableau -> StabTableau -> StabTableau
--- intersection (Tableau n1 gens1) (Tableau n2 gens2)
---     | n1 /= n2  = error ("Tableaux must have the same number of qubits for intersection: " ++ show n1 ++ " vs " ++ show n2)
---     | otherwise = projectOut (n1, 0) (Tableau n1 (gens1 ++ gens2))
---         where
-
--- -- if -I
--- intersect :: [Pauli] -> [Pauli] -> [Pauli]
--- intersect gens1 gens2 = 
---     where
---         gens' = (map (\g -> tensorProduct g g) gens1) ++
---                 (map (\g -> tensorProduct g identityPauli n2) gens2)
-
------------------------------
 -- Testing
------------------------------
 tableauToString :: StabTableau -> String
 tableauToString Tableau {qubitNum = _, generators = paulies} =
     unlines $ map pauliToString paulies
 
+ii :: Pauli
+ii = pauliFromString "II"
+ix :: Pauli
+ix = pauliFromString "IX"
+iz :: Pauli
+iz = pauliFromString "IZ"
+zi :: Pauli
+zi = pauliFromString "ZI"
+xz :: Pauli
+xz = pauliFromString "XZ"
+nxz :: Pauli
 nxz = pauliFromString "-XZ"
+zx :: Pauli
 zx = pauliFromString "ZX"
+xx :: Pauli
+xx = pauliFromString "XX"
+nxx :: Pauli
+nxx = pauliFromString "-XX"
+zz :: Pauli
+zz = pauliFromString "ZZ"
+yy :: Pauli
+yy = pauliFromString "YY"
+nyy :: Pauli
 nyy = pauliFromString "-YY"
-
-tab = Tableau {qubitNum = 2, generators = [zx, nyy, nxz]}
-
+xy :: Pauli
+xy = pauliFromString "XY"
 -- p1 = pauliFromString "-ZIXY"
 -- p2 = pauliFromString "IZYX"
 -- p3 = pauliFromString "-ZZZZ"
 
+tab :: StabTableau
+tab = Tableau {qubitNum = 2, generators = [zx, nyy, nxz]}
 -- tab2 = Tableau {qubitNum = 4, generators = [p1, p2, p3]}
-
-xz = pauliFromString "XZ"
--- zx = pauliFromString "ZX"
+t1 :: StabTableau
 t1 = Tableau {qubitNum = 2, generators = [xz, zx]}
-
-nxx = pauliFromString "-XX"
-zz = pauliFromString "ZZ"
+t2 :: StabTableau
 t2 = Tableau {qubitNum = 2, generators = [nxx, zz]}
+sGate :: StabTableau
+sGate = Tableau {qubitNum = 2, generators = [xy, zz]}
+zGate :: StabTableau
+zGate = Tableau {qubitNum = 2, generators = [nxx, zz]}
 
+bt :: BiTableau
 bt = BiTableau {qubitNums = (2, 2), biGenerators = [(xz, nxx), (zx, zz)]}
-
-
-zi = pauliFromString "ZI"
-iz = pauliFromString "IZ"
-ix = pauliFromString "IX"
-ii = pauliFromString "II"
-
+bt2 :: BiTableau
 bt2 = BiTableau {qubitNums = (2, 2), biGenerators = [(zi, zi), (ix, ix), (zi, ii), (iz, ii)]}
-
-
--- TODO: intersection and union

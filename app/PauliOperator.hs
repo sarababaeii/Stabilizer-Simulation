@@ -62,7 +62,7 @@ phaseBool :: Pauli -> Bool
 phaseBool p = unBit (phaseBit p)
 
 bitAt :: Int -> Pauli -> Bit
-bitAt i (Pauli xs zs c d)
+bitAt i p@(Pauli xs zs c d)
   | i < n          = boolToBit (xs !. i)
   | i < 2 * n      = boolToBit (zs !. (i - n))
   | i == 2 * n     = c
@@ -70,7 +70,7 @@ bitAt i (Pauli xs zs c d)
   | otherwise  = error ("Error: bitAt: index out of bounds: " ++ show i ++ 
                             " for Pauli with " ++ show n ++ " qubits")
   where
-    n = size xs
+    n = qubitCount p
 
 ---------------------------------------
 -- Constants
@@ -100,18 +100,17 @@ zPauli n i = Pauli {xBits = xs, zBits = zs, phaseBit = 0, iBit = 0}
 isIdentity :: Pauli -> Bool
 isIdentity (Pauli xs zs c d) = xs == 0 && zs == 0 && c == 0 && d == 0
 
--- is
 -----------------------------
 -- Operations
 -----------------------------
 -- (P, Q -> PQ)
 -- different from the paper
 groupOp :: Pauli -> Pauli -> Pauli
-groupOp p1 p2 = Pauli {xBits = xs', zBits = zs', phaseBit = c', iBit = d'}
+groupOp p1@(Pauli xs1 zs1 _ _) p2@(Pauli xs2 zs2 _ _) = Pauli {xBits = xs', zBits = zs', phaseBit = c', iBit = d'}
     where
         (c', d') = phaseAfterGroupOp p1 p2
-        xs' = xBits p1 `xor` xBits p2
-        zs' = zBits p1 `xor` zBits p2
+        xs' = xs1 `xor` xs2
+        zs' = zs1 `xor` zs2
 
 phaseAfterGroupOp :: Pauli -> Pauli -> (Bit, Bit)
 phaseAfterGroupOp (Pauli xs1 zs1 c1 d1) (Pauli xs2 zs2 c2 d2)
@@ -146,12 +145,12 @@ tensorProduct (Pauli xs1 zs1 c1 d1) (Pauli xs2 zs2 c2 d2) =
 -- cd P_1 \otimes ... \otimes P_{2n} -> 
 --     (P_1 \otimes ... \otimes P_n, cd P_{n+1} \otimes ... \otimes P_{2n})
 splitInOutPauli :: Pauli -> (Pauli, Pauli)
-splitInOutPauli (Pauli xs zs c d)
+splitInOutPauli p@(Pauli xs zs c d)
     | odd n = error ("Error: splitInOutPauli: Pauli must have even number of qubits: " ++ show n)
     | otherwise = (Pauli {xBits = xIn, zBits = zIn, phaseBit = 0, iBit = 0},
                     Pauli {xBits = xOut, zBits = zOut, phaseBit = c, iBit = d})
     where
-        n = size xs
+        n = qubitCount p
         (xIn, xOut) = splitAtBV (n `div` 2) xs
         (zIn, zOut) = splitAtBV (n `div` 2) zs
 
@@ -205,9 +204,7 @@ measuringPauli p a gen = (Pauli {xBits = xs, zBits = zs, phaseBit = c, iBit = 0}
         (c, gen') = randomBit gen
 
 isInCompBasis :: Int -> Pauli -> Bool
-isInCompBasis i p = not x
-    where
-         x = xBits p !. i
+isInCompBasis i (Pauli xs _ _ _) = not $ xs !. i
 
 firstNonCompBasisPauli :: Int -> [Pauli] -> Maybe (Pauli, Int)
 firstNonCompBasisPauli = findFirstNonCompBasisPauli 0
@@ -220,9 +217,9 @@ findFirstNonCompBasisPauli ind a (p:ps)
 
 -- Testing
 pauliToString :: Pauli -> String
-pauliToString (Pauli xs zs c d) = phase ++ iPart ++ body
+pauliToString p@(Pauli xs zs c d) = phase ++ iPart ++ body
     where
-        n = size xs
+        n = qubitCount p
         phase = if c == 1 then "-" else ""
         iPart = if d == 1 then "i" else ""
         body = [pauliChar (xs !. i) (zs !. i) | i <- [0 .. n - 1]]

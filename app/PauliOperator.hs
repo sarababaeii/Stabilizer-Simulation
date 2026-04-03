@@ -13,8 +13,12 @@ module PauliOperator
 , xPauli
 , zPauli
 , isIdentity
+, isLikeIdentity
 , groupOp
+, phaseAfterGroupOp
 , tensorProduct
+, splitInOutPauli
+, transposedPhase
 , applyGate
 , measuringPauli
 , isInCompBasis
@@ -26,13 +30,14 @@ module PauliOperator
 import Quantum (Gate(..), Measure (qubit))
 import BitUtils
 
-import Data.Bits
-import Data.Bit
-import Data.BitVector (BitVector, size, (!.), (#), zeroExtend, fromBits)
+import Data.Bit (Bit)
+import Data.Bits (bit, xor, (.&.))
+import Data.BitVector (BitVector, (!.), (#), size, fromBits, zeroExtend)
 
 import System.Random (StdGen)
 import Control.DeepSeq (NFData(..))
 import GHC.Generics (Generic)
+import Data.Type.Coercion (trans)
 
 data Pauli = Pauli { xBits :: BitVector
                    , zBits :: BitVector
@@ -59,7 +64,7 @@ vectorLength :: Pauli -> Int
 vectorLength p = 2 * qubitCount p + 2
 
 phaseBool :: Pauli -> Bool
-phaseBool p = unBit (phaseBit p)
+phaseBool (Pauli _ _ c _) = bitToBool c
 
 bitAt :: Int -> Pauli -> Bit
 bitAt i p@(Pauli xs zs c d)
@@ -100,26 +105,30 @@ zPauli n i = Pauli {xBits = xs, zBits = zs, phaseBit = 0, iBit = 0}
 isIdentity :: Pauli -> Bool
 isIdentity (Pauli xs zs c d) = xs == 0 && zs == 0 && c == 0 && d == 0
 
+isLikeIdentity :: Pauli -> Bool
+isLikeIdentity (Pauli xs zs _ _) = xs == 0 && zs == 0
+
 -----------------------------
 -- Operations
 -----------------------------
--- (P, Q -> PQ)
--- different from the paper
+-- P, Q -> PQ (different from the Improved Stab Sim paper)
 groupOp :: Pauli -> Pauli -> Pauli
-groupOp p1@(Pauli xs1 zs1 _ _) p2@(Pauli xs2 zs2 _ _) = Pauli {xBits = xs', zBits = zs', phaseBit = c', iBit = d'}
+groupOp p1@(Pauli xs1 zs1 _ _) p2@(Pauli xs2 zs2 _ _)
+    | n1 /= n2  = error ("Error: groupOp: Paulies must have the same number of qubits for group operation: " ++ show n1 ++ " vs " ++ show n2)
+    | otherwise = Pauli {xBits = xs', zBits = zs', phaseBit = c', iBit = d'}
     where
-        (c', d') = phaseAfterGroupOp p1 p2
+        (n1, n2) = (qubitCount p1, qubitCount p2)
+        (c', d') = phaseAfterGroupOp n1 p1 p2
         xs' = xs1 `xor` xs2
         zs' = zs1 `xor` zs2
 
-phaseAfterGroupOp :: Pauli -> Pauli -> (Bit, Bit)
-phaseAfterGroupOp (Pauli xs1 zs1 c1 d1) (Pauli xs2 zs2 c2 d2)
+phaseAfterGroupOp :: Int -> Pauli -> Pauli -> (Bit, Bit)
+phaseAfterGroupOp n (Pauli xs1 zs1 c1 d1) (Pauli xs2 zs2 c2 d2)
     | p `mod` 4 == 0 = (0, 0)
     | p `mod` 4 == 2 = (1, 0)
     | p `mod` 4 == 1 = (0, 1)
     | p `mod` 4 == 3 = (1, 1)
     where
-        n = size xs1
         gs = [generatedPhase (xs1 !. i) (zs1 !. i) (xs2 !. i) (zs2 !. i) | i <- [0 .. n - 1]]
         p = sum gs + bitPairToInt c1 d1 + bitPairToInt c2 d2 
 
@@ -153,6 +162,14 @@ splitInOutPauli p@(Pauli xs zs c d)
         n = qubitCount p
         (xIn, xOut) = splitAtBV (n `div` 2) xs
         (zIn, zOut) = splitAtBV (n `div` 2) zs
+
+-- TODO: i?
+transposedPhase :: Pauli -> Bit
+transposedPhase (Pauli xs zs c _)
+    | odd yCount = c `xor` 1
+    | otherwise  = c
+    where
+        yCount = oneCount (xs .&. zs)
 
 -----------------------------
 -- Simulation

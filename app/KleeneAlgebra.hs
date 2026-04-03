@@ -10,6 +10,9 @@ module KleeneAlgebra
 import PauliOperator
 import StabilizerTableau
 
+import Data.Bits (xor)
+
+-- Note: It's always on 2n qubits, where the first n qubits are "input" and the last n qubits are "output".
 newtype CommandDom = CommandDom StabTableau deriving (Eq, Show)
 
 -----------------------------
@@ -30,20 +33,38 @@ one n = CommandDom (Tableau (2 * n) gens)
 choice :: CommandDom -> CommandDom -> CommandDom
 choice (CommandDom tab1) (CommandDom tab2) = CommandDom (intersection tab1 tab2)
 
--- compose :: CommandDom -> CommandDom -> CommandDom
--- compose (CommandDom (StabTableau n1 gen1)) (CommandDom (StabTableau n2 gen2)) 
---     | n1 /= n2  = error ("Tableaux must have the same number of qubits for composition: " ++ show n1 ++ " vs " ++ show n2)
---     | otherwise = CommandDom (projectOut (BiTableau (??) (zip leftGens rightGens)))
---     where
---         gen1' = map splitInOutPauli gen1
---         gen1In = map fst gen1'
---         gen1Out = map snd gen1'
---         gen2' = map splitInOutPauli gen2
---         gen2In = map fst gen2'
---         gen2Out = map snd gen2'
---         leftGens = gen1Out ++ gen2In
---         rightGens = map (\g -> tensorProduct g (identityPauli n1)) gen1In ++ map (tensorProduct (identityPauli n1)) gen2Out
+compose :: CommandDom -> CommandDom -> CommandDom
+compose (CommandDom (Tableau n1 gen1)) (CommandDom (Tableau n2 gen2)) 
+    | n1 /= n2  = error ("Tableaux must have the same number of qubits for composition: " ++ show n1 ++ " vs " ++ show n2)
+    | otherwise = CommandDom (projectOutBy (composeProjMap n) (BiTableau (n, n1) (zip leftGens rightGens)))
+    where
+        n = n1 `div` 2
+        id_n = identityPauli n
+        (gen1In, gen1Out) = unzip $ map splitInOutPauli gen1
+        (gen2In, gen2Out) = unzip $ map (applyTransposedPhase . splitInOutPauli) gen2
+        leftGens = gen1Out ++ gen2In
+        rightGens = map (`tensorProduct` id_n) gen1In ++ map (tensorProduct id_n) gen2Out
 
+applyTransposedPhase :: (Pauli, Pauli) -> (Pauli, Pauli)
+applyTransposedPhase (pIn, (Pauli xs zs c d)) = (pIn, Pauli xs zs (c `xor` transposedPhase pIn) d)
+
+composeProjMap :: Int -> (Pauli, Pauli) -> Maybe Pauli
+composeProjMap n (p1, p2@(Pauli xs zs _ _))
+    | isLikeIdentity p1 = Just (Pauli xs zs c' d')
+    | otherwise         = Nothing
+    where 
+        (c', d') = phaseAfterGroupOp n p1 p2
 
 star :: CommandDom -> CommandDom
 star = undefined
+
+-- Test
+sGate :: CommandDom
+sGate = CommandDom (sTab)
+zGate :: CommandDom
+zGate = CommandDom (zTab)
+
+g :: CommandDom
+g = CommandDom (gTab)
+h :: CommandDom
+h = CommandDom (hTab)

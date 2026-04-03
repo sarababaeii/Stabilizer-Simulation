@@ -9,15 +9,20 @@ module StabilizerTableau
 , intersection
 , union
 , normalize
-, projectOut
+, projectOutBy
+, sTab
+, zTab
+, gTab
+, hTab
 ) where
 
 import PauliOperator
 import Utils (extractValue)
 
-import Data.Maybe (isNothing)
+import Data.Maybe (isNothing, mapMaybe)
 import Data.List (takeWhile)
-import Data.Bit
+import Data.Bit ( Bit )
+import Data.Bits (xor)
 
 data StabTableau = Tableau { qubitNum :: Int
                            , generators :: [Pauli]
@@ -100,10 +105,11 @@ intersection t1@(Tableau n1 gen1) t2@(Tableau n2 gen2)
     | isUnsat t1 = t2
     | isUnsat t2 = t1
     | n1 /= n2   = error ("Tableaux must have the same number of qubits for intersection: " ++ show n1 ++ " vs " ++ show n2)
-    | otherwise  = projectOut BiTableau {qubitNums = (n1, n2), biGenerators = zip leftGens rightGens}
+    | otherwise  = projectOutBy projectMap BiTableau {qubitNums = (n1, n2), biGenerators = zip leftGens rightGens}
     where
         leftGens = gen1 ++ gen2
         rightGens = gen1 ++ replicate (length gen2) (identityPauli n1)
+        projectMap (p1, p2) = if isIdentity p1 then Just p2 else Nothing
 
 union :: StabTableau -> StabTableau -> StabTableau
 union t1@(Tableau n1 gen1) t2@(Tableau n2 gen2)
@@ -124,12 +130,10 @@ normalize (Tableau n gens)
         gens' = takeWhile (not . isIdentity) $ toEchelonFormWithPivot 0 gens
         t' = Tableau {qubitNum = n, generators = gens'}
 
-projectOut :: BiTableau -> StabTableau
-projectOut bt = normalize Tableau {qubitNum = n', generators = gens'}
+projectOutBy :: ((Pauli, Pauli) -> Maybe Pauli) -> BiTableau -> StabTableau
+projectOutBy extract (BiTableau (_, n') biGens) = normalize Tableau {qubitNum = n', generators = mapMaybe extract biGens'}
     where
-        n' = snd (qubitNums bt)
-        gens = biGenerators (toEchelonFormBi bt)
-        gens' = map snd $ dropWhile (not . isIdentity . fst) gens
+        biGens' = toEchelonFormWithPivot 0 biGens
 
 toEchelonForm :: StabTableau -> StabTableau
 toEchelonForm (Tableau n gens) = Tableau {qubitNum = n, generators = toEchelonFormWithPivot 0 gens}
@@ -198,9 +202,14 @@ nyy :: Pauli
 nyy = pauliFromString "-YY"
 xy :: Pauli
 xy = pauliFromString "XY"
--- p1 = pauliFromString "-ZIXY"
--- p2 = pauliFromString "IZYX"
--- p3 = pauliFromString "-ZZZZ"
+p1 :: Pauli
+p1 = pauliFromString "YZYXYZ"
+p2 :: Pauli
+p2 = pauliFromString "ZIZYYY"
+p3 :: Pauli
+p3 = pauliFromString "XYZYYY"
+p4 :: Pauli
+p4 = pauliFromString "ZIXYIY"
 
 tab :: StabTableau
 tab = Tableau {qubitNum = 2, generators = [zx, nyy, nxz]}
@@ -209,10 +218,15 @@ t1 :: StabTableau
 t1 = Tableau {qubitNum = 2, generators = [xz, zx]}
 t2 :: StabTableau
 t2 = Tableau {qubitNum = 2, generators = [nxx, zz]}
-sGate :: StabTableau
-sGate = Tableau {qubitNum = 2, generators = [xy, zz]}
-zGate :: StabTableau
-zGate = Tableau {qubitNum = 2, generators = [nxx, zz]}
+sTab :: StabTableau
+sTab = Tableau {qubitNum = 2, generators = [xy, zz]}
+zTab :: StabTableau
+zTab = Tableau {qubitNum = 2, generators = [nxx, zz]}
+
+gTab :: StabTableau
+gTab = Tableau {qubitNum = 6, generators = [p1, p2]}
+hTab :: StabTableau
+hTab = Tableau {qubitNum = 6, generators = [p3, p4]}
 
 bt :: BiTableau
 bt = BiTableau {qubitNums = (2, 2), biGenerators = [(xz, nxx), (zx, zz)]}

@@ -57,6 +57,9 @@ instance NFData BitVector where
 
 instance NFData Pauli
 
+-----------------------------
+-- Accessors
+-----------------------------
 qubitCount :: Pauli -> Int
 qubitCount p = size (xBits p)
 

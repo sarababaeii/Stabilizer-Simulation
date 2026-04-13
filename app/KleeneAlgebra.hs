@@ -16,7 +16,13 @@ import Data.Bits (xor)
 newtype CommandDom = CommandDom StabTableau deriving (Eq, Show)
 
 -----------------------------
--- Constans
+-- Accessors
+-----------------------------
+qubitCount' :: CommandDom -> Int
+qubitCount' (CommandDom (Tableau n _)) = n `div` 2
+
+-----------------------------
+-- Constants
 -----------------------------
 zero :: Int -> CommandDom
 zero n = CommandDom (unsatTableau (2 * n))
@@ -55,8 +61,23 @@ composeProjMap n (p1, p2@(Pauli xs zs _ _))
     where 
         (c', d') = phaseAfterGroupOp n p1 p2
 
+fixedPoint :: (Eq a) => (a -> a) -> a -> a
+fixedPoint step x0 = fst . head . dropWhile (uncurry (/=)) $ zip xs (tail xs)
+    where
+        xs = iterate step x0
+
 star :: CommandDom -> CommandDom
-star = undefined
+star stab = fixedPoint step (one n)
+    where
+        n = qubitCount' stab
+        step x = choice (one n) (compose stab x)
+
+-- if we had distributivity:
+-- star :: CommandDom -> CommandDom
+-- star stab = fixedPoint step x0
+--     where
+--         x0 = choice (one (qubitCount' stab)) stab
+--         step x = compose x x
 
 -- Test
 sGate :: CommandDom
@@ -68,3 +89,5 @@ g :: CommandDom
 g = CommandDom (gTab)
 h :: CommandDom
 h = CommandDom (hTab)
+
+-- Bug: compose g (one 3) is not g, it differs in phase.
